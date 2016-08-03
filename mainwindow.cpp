@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "newdialog.h"
 #include "ui_mainwindow.h"
 #include <QtWidgets>
 
@@ -75,7 +76,8 @@ void MainWindow::open()
 void MainWindow::createNew()
 {
     QDialog *createNewDialog = new QDialog(this);
-
-    createNewDialog->exec();
+    NewDialog *dialog = new NewDialog(this);
+    dialog->exec();
+    //createNewDialog->exec();
 
 }

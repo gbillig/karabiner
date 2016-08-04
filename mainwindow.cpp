@@ -75,7 +75,7 @@ void MainWindow::open()
 
 void MainWindow::createNew()
 {
-    QDialog *createNewDialog = new QDialog(this);
+    //QDialog *createNewDialog = new QDialog(this);
     NewDialog *dialog = new NewDialog(this);
     dialog->exec();
     //createNewDialog->exec();

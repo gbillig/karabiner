@@ -2,6 +2,7 @@
 #define NEWDIALOG_H
 
 #include <QDialog>
+#include <QRadioButton>
 
 class QCheckBox;
 class QDialogButtonBox;
@@ -20,15 +21,18 @@ public:
 private:
     QLabel *nameLabel;
     QLineEdit *nameEdit;
-    QCheckBox *caseCheckBox;
-    QCheckBox *fromStartCheckBox;
-    QCheckBox *wholeWordsCheckBox;
-    QCheckBox *searchSelectionCheckBox;
-    QCheckBox *backwardCheckBox;
+    QGroupBox *cryptoBox;
+    QRadioButton *Aes128RadioButton;
+    QRadioButton *Aes192RadioButton;
+    QRadioButton *Aes256RadioButton;
+    QGroupBox *hashBox;
+    QRadioButton *Sha256RadioButton;
+    QRadioButton *Sha384RadioButton;
+    QRadioButton *Sha512RadioButton;
+
     QDialogButtonBox *buttonBox;
     QPushButton *doneButton;
     QPushButton *cancelButton;
-    QWidget *extension;
 };
 
 

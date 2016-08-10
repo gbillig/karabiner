@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "newdialog.h"
 #include "ui_mainwindow.h"
+#include "user.h"
 #include <QtWidgets>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -63,6 +64,10 @@ void MainWindow::createUi()
     QTextCursor cursor = ui->textEdit->textCursor();
     cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor, 1);
     */
+
+
+    User *myUser = new User();
+    myUser->PopulateFromString("Hello,ae5343934bc2393d,22,twenty-two");
 }
 
 void MainWindow::open()

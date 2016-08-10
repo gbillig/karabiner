@@ -4,3 +4,8 @@ UserData::UserData()
 {
 
 }
+
+void UserData::Open(QString filepath)
+{
+
+}

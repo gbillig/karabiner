@@ -2,11 +2,13 @@
 #include "newdialog.h"
 #include "ui_mainwindow.h"
 #include "user.h"
+#include "userdata.h"
 #include <QtWidgets>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    userdata(new UserData)
 {
     ui->setupUi(this);
     createUi();
@@ -72,10 +74,10 @@ void MainWindow::createUi()
 
 void MainWindow::open()
 {
-      QString fileName = QFileDialog::getOpenFileName(this);
-      if (!fileName.isEmpty()) {
-          //loadFile(fileName);
-      }
+    QString filePath = QFileDialog::getOpenFileName(this);
+    if (!filePath.isEmpty()) {
+        userdata.Open(filePath);
+    }
 }
 
 void MainWindow::createNew()

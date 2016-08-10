@@ -8,6 +8,7 @@ class UserData
 
 public:
     UserData();
+    void Open(QString filepath);
 
 private:
     User users[];

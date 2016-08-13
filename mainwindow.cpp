@@ -76,7 +76,7 @@ void MainWindow::open()
 {
     QString filePath = QFileDialog::getOpenFileName(this);
     if (!filePath.isEmpty()) {
-        userdata->Open(filePath);
+        userdata->ReadFromFile(filePath);
     }
 }
 

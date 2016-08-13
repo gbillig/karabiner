@@ -2,13 +2,15 @@
 #define USERDATA_H
 
 #include "user.h"
+#include "QFile"
+#include "QDataStream"
 
 class UserData
 {
 
 public:
     UserData();
-    void Open(QString filepath);
+    int ReadFromFile(QString filepath);
 
 private:
     User users[];

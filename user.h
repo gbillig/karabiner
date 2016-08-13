@@ -35,4 +35,4 @@ private:
     QByteArray auth_hash;
 };
 
-#endif // USER_H\
+#endif // USER_H

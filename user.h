@@ -10,6 +10,12 @@ class User
 
 public:
     User();
+    User(QString username,
+         QByteArray auth_salt,
+         QByteArray key_salt,
+         QByteArray iv,
+         QByteArray auth_hash);
+
     void SetUsername(QString new_username);
     QString GetUsername();
     void SetAuthSalt(QByteArray new_auth_salt);

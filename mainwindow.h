@@ -22,7 +22,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    UserData userdata;
+    UserData *userdata;
     void createUi();
 };
 

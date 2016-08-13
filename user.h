@@ -3,21 +3,30 @@
 
 #include <stdint.h>
 #include <QString>
-#include <QStringList>
+#include <QByteArray>
 
 class User
 {
 
 public:
     User();
-    void PopulateFromString(QString input);
+    void SetUsername(QString new_username);
+    QString GetUsername();
+    void SetAuthSalt(QByteArray new_auth_salt);
+    QByteArray GetAuthSalt();
+    void SetKeySalt(QByteArray new_key_salt);
+    QByteArray GetKeySalt();
+    void SetIV(QByteArray new_iv);
+    QByteArray GetIV();
+    void SetAuthHash(QByteArray new_auth_hash);
+    QByteArray GetPasswordHash();
 
 private:
-    char username[];
-    uint8_t salt1[];
-    uint8_t salt2[];
-    uint8_t iv[];
-    uint8_t pw_hash[];
+    QString username;
+    QByteArray auth_salt;
+    QByteArray key_salt;
+    QByteArray iv;
+    QByteArray auth_hash;
 };
 
 #endif // USER_H\

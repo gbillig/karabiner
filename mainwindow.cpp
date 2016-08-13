@@ -69,14 +69,14 @@ void MainWindow::createUi()
 
 
     User *myUser = new User();
-    myUser->PopulateFromString("Hello,ae5343934bc2393d,22,twenty-two");
+    //myUser->PopulateFromString("Hello,ae5343934bc2393d,22,twenty-two");
 }
 
 void MainWindow::open()
 {
     QString filePath = QFileDialog::getOpenFileName(this);
     if (!filePath.isEmpty()) {
-        userdata.Open(filePath);
+        userdata->Open(filePath);
     }
 }
 

@@ -74,9 +74,16 @@ void MainWindow::createUi()
 
 void MainWindow::open()
 {
+    int rval;
     QString filePath = QFileDialog::getOpenFileName(this);
     if (!filePath.isEmpty()) {
-        userdata->ReadFromFile(filePath);
+        rval = userdata->ReadFromFile(filePath);
+        if (rval != 0) {
+            QMessageBox *invalidFileMsgBox = new QMessageBox(this);
+            invalidFileMsgBox->setText("Unable to open file \"" + filePath + "\".");
+            invalidFileMsgBox->setIcon(QMessageBox::Critical);
+            invalidFileMsgBox->exec();
+        }
     }
 }
 

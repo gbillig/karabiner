@@ -4,19 +4,35 @@
 NewDialog::NewDialog(QWidget *parent)
       : QDialog(parent)
 {
-    nameLabel = new QLabel(tr("Document &name:"));
-    nameEdit = new QLineEdit;
-    nameLabel->setBuddy(nameEdit);
+    usernameLabel = new QLabel(tr("&Username:"));
+    usernameEdit = new QLineEdit;
+    usernameLabel->setBuddy(usernameEdit);
+
+    passwordLabel = new QLabel(tr("&Password:"));
+    passwordEdit = new QLineEdit;
+    passwordLabel->setBuddy(passwordEdit);
+
+    passwordConfirmLabel = new QLabel(tr("&Confirm Password:"));
+    passwordConfirmEdit = new QLineEdit;
+    passwordConfirmLabel->setBuddy(passwordConfirmEdit);
 
     cryptoBox = new QGroupBox(tr("Encryption algorithm"));
     Aes128RadioButton = new QRadioButton(tr("AES-128"));
     Aes192RadioButton = new QRadioButton(tr("AES-192"));
     Aes256RadioButton = new QRadioButton(tr("AES-256"));
 
+    // temporarily disable other crypto options
+    Aes128RadioButton->setEnabled(false);
+    Aes192RadioButton->setEnabled(false);
+
     hashBox = new QGroupBox(tr("Hashing algorithm"));
     Sha256RadioButton = new QRadioButton(tr("SHA-256"));
     Sha384RadioButton = new QRadioButton(tr("SHA-384"));
     Sha512RadioButton = new QRadioButton(tr("SHA-512"));
+
+    // temporarily disable other password hashing options
+    Sha384RadioButton->setEnabled(false);
+    Sha512RadioButton->setEnabled(false);
 
     Aes256RadioButton->setChecked(true);
     Sha256RadioButton->setChecked(true);
@@ -38,14 +54,24 @@ NewDialog::NewDialog(QWidget *parent)
     hashBoxLayout->addWidget(Sha512RadioButton);
     hashBox->setLayout(hashBoxLayout);
 
-    QHBoxLayout *topLayout = new QHBoxLayout;
-    topLayout->addWidget(nameLabel);
-    topLayout->addWidget(nameEdit);
+    QHBoxLayout *usernameLayout = new QHBoxLayout;
+    usernameLayout->addWidget(usernameLabel);
+    usernameLayout->addWidget(usernameEdit);
+
+    QHBoxLayout *passwordLayout = new QHBoxLayout;
+    passwordLayout->addWidget(passwordLabel);
+    passwordLayout->addWidget(passwordEdit);
+
+    QHBoxLayout *passwordConfirmLayout = new QHBoxLayout;
+    passwordConfirmLayout->addWidget(passwordConfirmLabel);
+    passwordConfirmLayout->addWidget(passwordConfirmEdit);
 
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addLayout(topLayout, 0, 0, 1, -1);
-    mainLayout->addWidget(cryptoBox, 1, 0);
-    mainLayout->addWidget(hashBox, 1, 1);
-    mainLayout->addWidget(buttonBox, 2, 0, 1, -1);
+    mainLayout->addLayout(usernameLayout, 0, 0, 1, -1);
+    mainLayout->addLayout(passwordLayout, 1, 0, 1, -1);
+    mainLayout->addLayout(passwordConfirmLayout, 2, 0, 1, -1);
+    mainLayout->addWidget(cryptoBox, 3, 0);
+    mainLayout->addWidget(hashBox, 3, 1);
+    mainLayout->addWidget(buttonBox, 4, 0, 1, -1);
     setLayout(mainLayout);
 }

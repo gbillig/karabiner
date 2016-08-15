@@ -19,8 +19,12 @@ public:
     NewDialog(QWidget *parent = 0);
 
 private:
-    QLabel *nameLabel;
-    QLineEdit *nameEdit;
+    QLabel *usernameLabel;
+    QLineEdit *usernameEdit;
+    QLabel *passwordLabel;
+    QLineEdit *passwordEdit;
+    QLabel *passwordConfirmLabel;
+    QLineEdit *passwordConfirmEdit;
     QGroupBox *cryptoBox;
     QRadioButton *Aes128RadioButton;
     QRadioButton *Aes192RadioButton;

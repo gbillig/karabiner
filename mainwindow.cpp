@@ -77,7 +77,7 @@ void MainWindow::open()
     int rval;
     QString filePath = QFileDialog::getOpenFileName(this);
     if (!filePath.isEmpty()) {
-        rval = userdata->ReadFromFile(filePath);
+        rval = userdata->ParseUserFile(filePath);
         if (rval != 0) {
             QMessageBox *invalidFileMsgBox = new QMessageBox(this);
             invalidFileMsgBox->setText("Unable to open file \"" + filePath + "\".");

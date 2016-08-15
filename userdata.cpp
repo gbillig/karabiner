@@ -2,10 +2,10 @@
 
 UserData::UserData()
 {
-
+    QVector<User> users;
 }
 
-int UserData::ReadFromFile(QString filepath)
+int UserData::ParseUserFile(QString filepath)
 {
     QFile file(filepath);
     file.open(QIODevice::ReadOnly);
@@ -41,6 +41,9 @@ int UserData::ReadFromFile(QString filepath)
             // invalid entry
             return 1;
         }
+
+        User *user = new User(username, auth_salt, key_salt, iv, auth_hash);
+        users.append(*user);
     }
 
     file_stream >> end_of_file;
@@ -49,5 +52,10 @@ int UserData::ReadFromFile(QString filepath)
         return 1;
     }
 
+    return 0;
+}
+
+int UserData::AddNewUser(User user) {
+    users.append(user);
     return 0;
 }

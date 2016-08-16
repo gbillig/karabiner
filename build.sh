@@ -1,5 +1,5 @@
 #!/bin/bash
-qmake karabiner-gui.pro -r -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+cd build
+qmake ../karabiner-gui.pro -r -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+sqt "make in"leep 2s
 make
-sleep 5s
-mv *.o ui* moc_* qrc* Makefile karabiner-gui ./build

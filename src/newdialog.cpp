@@ -1,4 +1,4 @@
-#include "newdialog.h"
+#include "../inc/newdialog.h"
 #include <QtWidgets>
 
 NewDialog::NewDialog(QWidget *parent)

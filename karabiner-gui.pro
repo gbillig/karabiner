@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = karabiner-gui
 TEMPLATE = app
+LIBS += -L../lib/ -lglbcrypto
 
 
 SOURCES +=\

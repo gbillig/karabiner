@@ -1,8 +1,8 @@
-#include "mainwindow.h"
-#include "newdialog.h"
-#include "ui_mainwindow.h"
-#include "user.h"
-#include "userdata.h"
+#include "../inc/mainwindow.h"
+#include "../inc/newdialog.h"
+#include "../build/ui_mainwindow.h"
+#include "../inc/user.h"
+#include "../inc/userdata.h"
 #include <QtWidgets>
 
 MainWindow::MainWindow(QWidget *parent) :

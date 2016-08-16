@@ -12,18 +12,22 @@ TARGET = karabiner-gui
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    newdialog.cpp \
-    userdata.cpp \
-    user.cpp
+SOURCES +=\
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/newdialog.cpp \
+    src/user.cpp \
+    src/userdata.cpp
 
-HEADERS  += mainwindow.h \
-    newdialog.h \
-    userdata.h \
-    user.h
+HEADERS  += \
+    inc/mainwindow.h \
+    inc/userdata.h \
+    inc/user.h \
+    inc/newdialog.h
 
-FORMS    += mainwindow.ui
+
+FORMS    += \
+    ui/mainwindow.ui
 
 RESOURCES += \
     res.qrc

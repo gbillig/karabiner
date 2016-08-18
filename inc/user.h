@@ -11,6 +11,8 @@ class User
 public:
     User();
     User(QString username,
+         QString password);
+    User(QString username,
          QByteArray auth_salt,
          QByteArray key_salt,
          QByteArray iv,

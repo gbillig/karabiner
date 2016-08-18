@@ -81,6 +81,14 @@ NewDialog::NewDialog(QWidget *parent)
 
 void NewDialog::accept() {
 
-    //userdata->AddNewUser(newUser);
+    if (passwordEdit->text() != passwordConfirmEdit->text()) {
+        // passwords do not match
+        return;
+    }
+
+    QString username = usernameEdit->text();
+    QString password = passwordEdit->text();
+    User *newUser = new User(username, password);
+    userdata->AddNewUser(*newUser);
     done(QDialog::Accepted);
 }

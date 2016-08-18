@@ -8,7 +8,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    userdata(new UserData)
+    userdata(UserData::GetInstance())
 {
     ui->setupUi(this);
     createUi();
@@ -68,7 +68,7 @@ void MainWindow::createUi()
     */
 
 
-    User *myUser = new User();
+    //User *myUser = new User();
     //myUser->PopulateFromString("Hello,ae5343934bc2393d,22,twenty-two");
 }
 

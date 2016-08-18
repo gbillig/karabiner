@@ -2,7 +2,18 @@
 
 UserData::UserData()
 {
-    QVector<User> users;
+    users = new QVector<User>;
+}
+
+UserData* UserData::userdata_instance = 0;
+
+UserData* UserData::GetInstance()
+{
+    if (!userdata_instance) {
+        userdata_instance = new UserData;
+    }
+
+    return userdata_instance;
 }
 
 int UserData::ParseUserFile(QString filepath)
@@ -43,7 +54,7 @@ int UserData::ParseUserFile(QString filepath)
         }
 
         User *user = new User(username, auth_salt, key_salt, iv, auth_hash);
-        users.append(*user);
+        users->append(*user);
     }
 
     file_stream >> end_of_file;
@@ -56,6 +67,6 @@ int UserData::ParseUserFile(QString filepath)
 }
 
 int UserData::AddNewUser(User user) {
-    users.append(user);
+    users->append(user);
     return 0;
 }

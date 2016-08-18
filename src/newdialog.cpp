@@ -2,7 +2,8 @@
 #include <QtWidgets>
 
 NewDialog::NewDialog(QWidget *parent)
-      : QDialog(parent)
+      : QDialog(parent),
+        userdata(UserData::GetInstance())
 {
     usernameLabel = new QLabel(tr("&Username:"));
     usernameEdit = new QLineEdit;
@@ -79,5 +80,7 @@ NewDialog::NewDialog(QWidget *parent)
 }
 
 void NewDialog::accept() {
+
+    //userdata->AddNewUser(newUser);
     done(QDialog::Accepted);
 }

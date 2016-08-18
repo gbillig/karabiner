@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QRadioButton>
+#include "userdata.h"
 
 class QCheckBox;
 class QDialogButtonBox;
@@ -22,6 +23,8 @@ private slots:
     void accept();
 
 private:
+    UserData *userdata;
+
     QLabel *usernameLabel;
     QLineEdit *usernameEdit;
     QLabel *passwordLabel;

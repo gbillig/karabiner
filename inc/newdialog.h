@@ -18,6 +18,9 @@ class NewDialog : public QDialog
 public:
     NewDialog(QWidget *parent = 0);
 
+private slots:
+    void accept();
+
 private:
     QLabel *usernameLabel;
     QLineEdit *usernameEdit;

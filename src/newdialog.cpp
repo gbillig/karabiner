@@ -37,10 +37,12 @@ NewDialog::NewDialog(QWidget *parent)
     Aes256RadioButton->setChecked(true);
     Sha256RadioButton->setChecked(true);
 
-    buttonBox = new QDialogButtonBox(Qt::Horizontal);
-    buttonBox->addButton(QDialogButtonBox::Ok);
-    buttonBox->addButton(QDialogButtonBox::Cancel);
+    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                   | QDialogButtonBox::Cancel,
+                                     Qt::Horizontal);
 
+     connect(buttonBox, &QDialogButtonBox::accepted, this, &NewDialog::accept);
+     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     QVBoxLayout *cryptoBoxLayout = new QVBoxLayout;
     cryptoBoxLayout->addWidget(Aes128RadioButton);
@@ -74,4 +76,8 @@ NewDialog::NewDialog(QWidget *parent)
     mainLayout->addWidget(hashBox, 3, 1);
     mainLayout->addWidget(buttonBox, 4, 0, 1, -1);
     setLayout(mainLayout);
+}
+
+void NewDialog::accept() {
+    done(QDialog::Accepted);
 }

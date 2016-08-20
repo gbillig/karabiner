@@ -1,4 +1,5 @@
 #include "../inc/user.h"
+#include "../inc/glbcrypto/misc.h"
 
 User::User()
 {
@@ -25,6 +26,17 @@ User::User(QString username, QString password)
     // create auth_salt and key_salt
     // generate crypto secure pseudo random number for iv
     // calculate auth_hash with auth_salt + password
+
+    auth_salt = QByteArray("", 32);
+    get_random((unsigned char*) auth_salt.data(), 32);
+
+    key_salt = QByteArray("", 32);
+    get_random((unsigned char*) key_salt.data(), 32);
+
+    iv = QByteArray("", 32);
+    get_random((unsigned char*) iv.data(), 32);
+
+
 }
 
 void User::SetUsername(QString new_username) {

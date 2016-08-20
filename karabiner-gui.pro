@@ -24,7 +24,8 @@ HEADERS += \
     inc/mainwindow.h \
     inc/userdata.h \
     inc/user.h \
-    inc/newdialog.h
+    inc/newdialog.h \
+    inc/glbcrypto/misc.h
 
 
 FORMS += \

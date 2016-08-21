@@ -25,7 +25,9 @@ HEADERS += \
     inc/userdata.h \
     inc/user.h \
     inc/newdialog.h \
-    inc/glbcrypto/misc.h
+    inc/glbcrypto/misc.h \
+    inc/glbcrypto/aes.h \
+    inc/glbcrypto/sha.h
 
 
 FORMS += \

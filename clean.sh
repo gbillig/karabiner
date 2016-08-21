@@ -2,4 +2,4 @@
 cd build
 make clean
 rm Makefile
-rm karabiner-gui
+rm karabiner

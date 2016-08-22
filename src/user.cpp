@@ -1,5 +1,6 @@
 #include "../inc/user.h"
 #include "../inc/glbcrypto/misc.h"
+#include "../inc/glbcrypto/sha.h"
 
 User::User()
 {
@@ -28,15 +29,19 @@ User::User(QString username, QString password)
     // calculate auth_hash with auth_salt + password
 
     auth_salt = QByteArray("", 32);
-    get_random((unsigned char*) auth_salt.data(), 32);
+    get_random((uint8_t*) auth_salt.data(), 32);
 
     key_salt = QByteArray("", 32);
-    get_random((unsigned char*) key_salt.data(), 32);
+    get_random((uint8_t*) key_salt.data(), 32);
 
     iv = QByteArray("", 32);
-    get_random((unsigned char*) iv.data(), 32);
+    get_random((uint8_t*) iv.data(), 32);
 
+    QByteArray salted_password = password.toLatin1();
+    salted_password.prepend(auth_salt);
 
+    auth_hash = QByteArray("", 32);
+    sha_256((uint8_t*) auth_hash.data(), (uint8_t*) salted_password.data(), salted_password.length() * 8);
 }
 
 void User::SetUsername(QString new_username) {

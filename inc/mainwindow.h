@@ -19,6 +19,7 @@ public:
 private slots:
     void open();
     void createNew();
+    void saveAs();
 
 private:
     Ui::MainWindow *ui;

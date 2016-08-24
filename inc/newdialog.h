@@ -3,14 +3,13 @@
 
 #include <QDialog>
 #include <QRadioButton>
+#include <QLabel>
+#include <QLineEdit>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QGroupBox>
 #include "userdata.h"
 
-class QCheckBox;
-class QDialogButtonBox;
-class QGroupBox;
-class QLabel;
-class QLineEdit;
-class QPushButton;
 
 class NewDialog : public QDialog
 {

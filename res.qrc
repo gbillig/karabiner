@@ -52,5 +52,7 @@
         <file>res/upload_2-48.png</file>
         <file>res/upload-48.png</file>
         <file>res/create_new-48.png</file>
+        <file>res/save-48.png</file>
+        <file>res/save_as-48.png</file>
     </qresource>
 </RCC>

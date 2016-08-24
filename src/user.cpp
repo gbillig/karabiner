@@ -45,41 +45,41 @@ User::User(QString username, QString password)
 }
 
 void User::SetUsername(QString new_username) {
-    this->username = new_username;
+    username = new_username;
 }
 
 QString User::GetUsername() {
-    return this->username;
+    return username;
 }
 
 void User::SetAuthSalt(QByteArray new_auth_salt) {
-    this->auth_salt = new_auth_salt;
+    auth_salt = new_auth_salt;
 }
 
 QByteArray User::GetAuthSalt() {
-    return this->auth_salt;
+    return auth_salt;
 }
 
 void User::SetKeySalt(QByteArray new_key_salt) {
-    this->key_salt = new_key_salt;
+    key_salt = new_key_salt;
 }
 
 QByteArray User::GetKeySalt() {
-    return this->key_salt;
+    return key_salt;
 }
 
 void User::SetIV(QByteArray new_iv) {
-    this->iv = new_iv;
+    iv = new_iv;
 }
 
 QByteArray User::GetIV() {
-    return this->iv;
+    return iv;
 }
 
 void User::SetAuthHash(QByteArray new_auth_hash) {
-    this->auth_hash = new_auth_hash;
+    auth_hash = new_auth_hash;
 }
 
-QByteArray User::GetPasswordHash() {
-    return this->auth_hash;
+QByteArray User::GetAuthHash() {
+    return auth_hash;
 }

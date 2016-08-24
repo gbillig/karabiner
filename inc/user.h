@@ -27,7 +27,7 @@ public:
     void SetIV(QByteArray new_iv);
     QByteArray GetIV();
     void SetAuthHash(QByteArray new_auth_hash);
-    QByteArray GetPasswordHash();
+    QByteArray GetAuthHash();
 
 private:
     QString username;

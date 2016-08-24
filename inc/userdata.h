@@ -13,12 +13,13 @@ public:
     UserData();
     static UserData* GetInstance();
 
+    int SaveUserFile(QString filepath);
     int ParseUserFile(QString filepath);
     int AddNewUser(User user);
 
 private:
     static UserData *userdata_instance;
-    QVector<User> *users;
+    QVector<User> users;
 };
 
 #endif // USERDATA_H

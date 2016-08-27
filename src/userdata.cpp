@@ -125,5 +125,11 @@ int UserData::AddNewUser(User user) {
     }
 
     users.append(user);
+    emit userDataChanged();
+
     return 0;
+}
+
+QVector<User>* UserData::GetUsers() {
+    return &users;
 }

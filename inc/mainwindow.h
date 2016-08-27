@@ -2,6 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QGridLayout>
+#include <QListView>
+#include <QStringListModel>
+#include <QStringList>
+#include <QToolBar>
+#include <QFileDialog>
+#include <QMessageBox>
 #include "userdata.h"
 
 namespace Ui {
@@ -16,15 +23,22 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+
 private slots:
     void open();
     void createNew();
     void saveAs();
+    void updateSidebar();
 
 private:
-    Ui::MainWindow *ui;
-    UserData *userdata;
+    Ui::MainWindow* ui;
     void createUi();
+
+    UserData* userdata;
+    QGridLayout* mainLayout;
+    QListView* userSidebar;
+    QStringListModel* userSidebarModel;
 };
 
 #endif // MAINWINDOW_H

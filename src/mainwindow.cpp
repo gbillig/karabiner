@@ -3,7 +3,6 @@
 #include "../build/ui_mainwindow.h"
 #include "../inc/user.h"
 #include "../inc/userdata.h"
-#include <QtWidgets>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,10 +21,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::createUi()
 {
-    //create toolbar
+    // create toolbar
     QToolBar *fileToolBar = addToolBar("File");
 
-    //create actions
+    // create actions
     const QPixmap *new_pixmap = new QPixmap(":/res/create_new-48.png");
     QIcon *new_icon = new QIcon(*new_pixmap);
     QAction *newDocument = new QAction(*new_icon, "New document", this);
@@ -62,25 +61,23 @@ void MainWindow::createUi()
     actions->append(removeEntry);
 
     fileToolBar->addActions(*actions);
-    //ui->toolBar->addActions(*actions);
-    //ui->menuBar->addActions(*actions);
 
-    /*
-    QFile inputFile(":/input.txt");
-    inputFile.open(QIODevice::ReadOnly);
+    // create mainwindow layout
+    mainLayout = new QGridLayout();
+    QWidget* placeholderWidget = new QWidget();
 
-    QTextStream in(&inputFile);
-    QString line = in.readAll();
-    inputFile.close();
+    // create sidebar with list of users
+    userSidebar = new QListView(this);
+    userSidebarModel = new QStringListModel(this);
+    userSidebar->setModel(userSidebarModel);
+    updateSidebar();
+    connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateSidebar);
 
-    ui->textEdit->setPlainText(line);
-    QTextCursor cursor = ui->textEdit->textCursor();
-    cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor, 1);
-    */
+    mainLayout->addWidget(userSidebar, 0, 0);
+    mainLayout->addWidget(placeholderWidget, 0, 1);
 
+    this->centralWidget()->setLayout(mainLayout);
 
-    //User *myUser = new User();
-    //myUser->PopulateFromString("Hello,ae5343934bc2393d,22,twenty-two");
 }
 
 void MainWindow::open()
@@ -111,9 +108,19 @@ void MainWindow::saveAs()
 
 void MainWindow::createNew()
 {
-    //QDialog *createNewDialog = new QDialog(this);
     NewDialog *dialog = new NewDialog(this);
     dialog->exec();
-    //createNewDialog->exec();
+}
 
+void MainWindow::updateSidebar()
+{
+    int i;
+    QStringList userStringList = QStringList();
+    QVector<User>* users = userdata->GetUsers();
+
+    for (i = 0; i < users->size(); i++ ) {
+        userStringList << users->value(i).GetUsername();
+    }
+
+    userSidebarModel->setStringList(userStringList);
 }

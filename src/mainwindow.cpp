@@ -69,6 +69,8 @@ void MainWindow::createUi()
     // create sidebar with list of users
     userSidebar = new QListView(this);
     userSidebarModel = new QStringListModel(this);
+
+    userSidebar->setEditTriggers(QAbstractItemView::NoEditTriggers);
     userSidebar->setModel(userSidebarModel);
     updateSidebar();
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateSidebar);
@@ -76,7 +78,7 @@ void MainWindow::createUi()
     mainLayout->addWidget(userSidebar, 0, 0);
     mainLayout->addWidget(placeholderWidget, 0, 1);
 
-    this->centralWidget()->setLayout(mainLayout);
+    ui->centralWidget->setLayout(mainLayout);
 
 }
 
@@ -115,12 +117,28 @@ void MainWindow::createNew()
 void MainWindow::updateSidebar()
 {
     int i;
+
+    // find current selection
+    int selectedRow = -1;
+    QList<QModelIndex> selectedRowIndexes = userSidebar->selectionModel()->selectedRows();
+    if (selectedRowIndexes.size() > 0) {
+        QModelIndex selectedRowIndex = selectedRowIndexes[0];
+        selectedRow = selectedRowIndex.row();
+    }
+
+
     QStringList userStringList = QStringList();
     QVector<User>* users = userdata->GetUsers();
 
     for (i = 0; i < users->size(); i++ ) {
         userStringList << users->value(i).GetUsername();
     }
-
     userSidebarModel->setStringList(userStringList);
+
+    if (selectedRow < 0) {
+        return;
+    }
+
+    QModelIndex selectedIndex = userSidebarModel->index(selectedRow, 0);
+    userSidebar->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
 }

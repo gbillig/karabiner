@@ -39,6 +39,9 @@ int UserData::ParseUserFile(QString filepath)
     QByteArray auth_salt, key_salt, iv, auth_hash;
 
     file_stream >> num_entries;
+
+    QVector<User> new_users;
+
     int i;
     for (i = 0; i < num_entries; i++) {
         file_stream >> username;
@@ -54,7 +57,7 @@ int UserData::ParseUserFile(QString filepath)
         }
 
         User *user = new User(username, auth_salt, key_salt, iv, auth_hash);
-        users.append(*user);
+        new_users.append(*user);
     }
 
     file_stream >> end_of_file;
@@ -62,6 +65,9 @@ int UserData::ParseUserFile(QString filepath)
         // invalid file footer
         return 1;
     }
+
+    users = new_users;
+    emit userDataChanged();
 
     return 0;
 }

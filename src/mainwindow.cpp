@@ -79,7 +79,6 @@ void MainWindow::createUi()
     mainLayout->addWidget(placeholderWidget, 0, 1);
 
     ui->centralWidget->setLayout(mainLayout);
-
 }
 
 void MainWindow::open()
@@ -118,14 +117,13 @@ void MainWindow::updateSidebar()
 {
     int i;
 
-    // find current selection
+    // find the selected row
     int selectedRow = -1;
     QList<QModelIndex> selectedRowIndexes = userSidebar->selectionModel()->selectedRows();
     if (selectedRowIndexes.size() > 0) {
         QModelIndex selectedRowIndex = selectedRowIndexes[0];
         selectedRow = selectedRowIndex.row();
     }
-
 
     QStringList userStringList = QStringList();
     QVector<User>* users = userdata->GetUsers();

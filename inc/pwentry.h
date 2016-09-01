@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QByteArray>
+#include <QIODevice>
+#include <QDataStream>
 
 class PwEntry
 {
@@ -17,8 +19,9 @@ private:
     QString notes;
     bool decrypted;
 
-    QByteArray data;
+    QByteArray encrypted_data;
 
+    int EncryptEntry(QByteArray key, QByteArray iv);
 };
 
 #endif // PWENTRY_H

@@ -61,6 +61,29 @@ int PwEntry::EncryptEntry(QByteArray key, QByteArray iv) {
 
 int PwEntry::DecryptEntry(QByteArray key, QByteArray iv) {
 
+    // encrypted data cannot be empty
+    if (!encrypted_data.length()) {
+        return 1;
+    }
+
+    QByteArray plaintext_data_pad = QByteArray("", encrypted_data.length());
+
+    aes_256_cbc((uint8_t*) plaintext_data_pad.data(), (uint8_t*) encrypted_data.data(), encrypted_data.length(),
+                (uint8_t*) iv.data(), (uint8_t*) key.data(), key.size(), 1);
+
+    // k is the padded value. it also represents the number of bytes of padding that were added.
+    int k = plaintext_data_pad[plaintext_data_pad.length() - 1];
+    QByteArray plaintext_data = QByteArray("", plaintext_data_pad.length() - k);
+
+    strip_message_pad((uint8_t*) plaintext_data.data(), (uint8_t*) plaintext_data_pad.data(), plaintext_data_pad.length(), 16);
+
+    QDataStream data_stream(&plaintext_data, QIODevice::ReadOnly);
+
+    data_stream >> username;
+    data_stream >> password;
+    data_stream >> notes;
+
+    decrypted = true;
     return 0;
 }
 
@@ -74,7 +97,7 @@ int PwEntry::ClearPlaintext() {
     return 0;
 }
 
-int PwEntry::ClearCryptotext() {
+int PwEntry::ClearCiphertext() {
     encrypted_data.clear();
 
     encrypted = false;

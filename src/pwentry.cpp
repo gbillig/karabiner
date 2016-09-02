@@ -63,3 +63,22 @@ int PwEntry::DecryptEntry(QByteArray key, QByteArray iv) {
 
     return 0;
 }
+
+int PwEntry::ClearPlaintext() {
+    username.clear();
+    password.clear();
+    notes.clear();
+
+    decrypted = false;
+
+    return 0;
+}
+
+int PwEntry::ClearCryptotext() {
+    encrypted_data.clear();
+
+    encrypted = false;
+
+    return 0;
+}
+

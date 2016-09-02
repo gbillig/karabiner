@@ -24,6 +24,9 @@ private:
 
     int EncryptEntry(QByteArray key, QByteArray iv);
     int DecryptEntry(QByteArray key, QByteArray iv);
+
+    int ClearPlaintext();
+    int ClearCryptotext();
 };
 
 #endif // PWENTRY_H

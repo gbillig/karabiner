@@ -17,11 +17,13 @@ private:
     QString username;
     QString password;
     QString notes;
+    bool encrypted;
     bool decrypted;
 
     QByteArray encrypted_data;
 
     int EncryptEntry(QByteArray key, QByteArray iv);
+    int DecryptEntry(QByteArray key, QByteArray iv);
 };
 
 #endif // PWENTRY_H

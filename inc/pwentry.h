@@ -14,14 +14,15 @@ public:
     PwEntry(QString username, QString password, QString notes);
     PwEntry(QByteArray encrypted_data);
 
-private:
     QString username;
     QString password;
     QString notes;
-    bool encrypted;
-    bool decrypted;
 
     QByteArray encrypted_data;
+
+private:
+    bool encrypted;
+    bool decrypted;
 
     int EncryptEntry(QByteArray key, QByteArray iv);
     int DecryptEntry(QByteArray key, QByteArray iv);

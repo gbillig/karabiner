@@ -129,7 +129,7 @@ void MainWindow::updateSidebar()
     QVector<User>* users = userdata->GetUsers();
 
     for (i = 0; i < users->size(); i++ ) {
-        userStringList << users->value(i).GetUsername();
+        userStringList << users->value(i).username;
     }
     userSidebarModel->setStringList(userStringList);
 

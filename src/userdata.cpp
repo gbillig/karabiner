@@ -56,7 +56,8 @@ int UserData::ParseUserFile(QString filepath)
             return 1;
         }
 
-        User *user = new User(username, auth_salt, key_salt, iv, auth_hash);
+        QVector<PwEntry> password_entries = QVector<PwEntry>();
+        User *user = new User(username, auth_salt, key_salt, iv, auth_hash, password_entries);
         new_users.append(*user);
     }
 
@@ -92,24 +93,15 @@ int UserData::SaveUserFile(QString filepath) {
     quint16 end_of_entry = 0xE0E0;
     quint16 end_of_file = 0xE0F0;
 
-    QString username;
-    QByteArray auth_salt, key_salt, iv, auth_hash;
-
     file_stream << num_entries;
     int i;
     for (i = 0; i < num_entries; i++) {
+        file_stream << users[i].username;
+        file_stream << users[i].auth_salt;
+        file_stream << users[i].key_salt;
+        file_stream << users[i].iv;
+        file_stream << users[i].auth_hash;
 
-        username = users[i].GetUsername();
-        auth_salt = users[i].GetAuthSalt();
-        key_salt = users[i].GetKeySalt();
-        iv = users[i].GetIV();
-        auth_hash = users[i].GetAuthHash();
-
-        file_stream << username;
-        file_stream << auth_salt;
-        file_stream << key_salt;
-        file_stream << iv;
-        file_stream << auth_hash;
         file_stream << end_of_entry;
     }
 
@@ -124,7 +116,7 @@ int UserData::AddNewUser(User user) {
     int i;
 
     for (i = 0; i < users.size(); i++) {
-        if (users[i].GetUsername() == user.GetUsername()) {
+        if (users[i].username == user.username) {
             // user with this username already exists!
             return 1;
         }

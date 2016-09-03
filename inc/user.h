@@ -21,18 +21,6 @@ public:
          QByteArray auth_hash,
          QVector<PwEntry> password_entries);
 
-    void SetUsername(QString new_username);
-    QString GetUsername();
-    void SetAuthSalt(QByteArray new_auth_salt);
-    QByteArray GetAuthSalt();
-    void SetKeySalt(QByteArray new_key_salt);
-    QByteArray GetKeySalt();
-    void SetIV(QByteArray new_iv);
-    QByteArray GetIV();
-    void SetAuthHash(QByteArray new_auth_hash);
-    QByteArray GetAuthHash();
-
-private:
     QString username;
     QByteArray auth_salt;
     QByteArray key_salt;
@@ -40,6 +28,9 @@ private:
     QByteArray auth_hash;
 
     QVector<PwEntry> password_entries;
+
+private:
+
 };
 
 #endif // USER_H

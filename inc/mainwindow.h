@@ -9,6 +9,7 @@
 #include <QToolBar>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QPushButton>
 #include "userdata.h"
 
 namespace Ui {
@@ -36,7 +37,9 @@ private:
     void createUi();
 
     UserData* userdata;
+
     QGridLayout* mainLayout;
+
     QListView* userSidebar;
     QStringListModel* userSidebarModel;
 };

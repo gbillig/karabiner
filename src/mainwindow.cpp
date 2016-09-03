@@ -44,21 +44,11 @@ void MainWindow::createUi()
     QAction *saveAsDocument = new QAction(*save_as_icon, "Save document as", this);
     connect(saveAsDocument, &QAction::triggered, this, &MainWindow::saveAs);
 
-    const QPixmap *plus_pixmap = new QPixmap(":/res/plus-48.png");
-    QIcon *plus_icon = new QIcon(*plus_pixmap);
-    QAction *newEntry = new QAction(*plus_icon, "New entry", this);
-
-    const QPixmap *minus_pixmap = new QPixmap(":/res/minus-48.png");
-    QIcon *minus_icon = new QIcon(*minus_pixmap);
-    QAction *removeEntry = new QAction(*minus_icon, "Remove entry", this);
-
     QList<QAction*> *actions = new QList<QAction*>();
     actions->append(newDocument);
     actions->append(openDocument);
     actions->append(saveDocument);
     actions->append(saveAsDocument);
-    actions->append(newEntry);
-    actions->append(removeEntry);
 
     fileToolBar->addActions(*actions);
 
@@ -67,6 +57,17 @@ void MainWindow::createUi()
     QWidget* placeholderWidget = new QWidget();
 
     // create sidebar with list of users
+    const QPixmap *plus_pixmap = new QPixmap(":/res/plus-48.png");
+    QIcon *plus_icon = new QIcon(*plus_pixmap);
+    //QAction *newEntry = new QAction(*plus_icon, "New entry", this);
+    QPushButton *addEntry = new QPushButton(*plus_icon, "Add entry", this);
+    connect(addEntry, &QPushButton::clicked, this, &MainWindow::createNew);
+
+    const QPixmap *minus_pixmap = new QPixmap(":/res/minus-48.png");
+    QIcon *minus_icon = new QIcon(*minus_pixmap);
+    //QAction *removeEntry = new QAction(*minus_icon, "Remove entry", this);
+    QPushButton *removeEntry = new QPushButton(*minus_icon, "Remove entry", this);
+
     userSidebar = new QListView(this);
     userSidebarModel = new QStringListModel(this);
 
@@ -75,7 +76,14 @@ void MainWindow::createUi()
     updateSidebar();
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateSidebar);
 
-    mainLayout->addWidget(userSidebar, 0, 0);
+    QGridLayout* userSidebarLayout = new QGridLayout();
+    userSidebarLayout->addWidget(addEntry, 0, 0);
+    userSidebarLayout->addWidget(removeEntry, 0, 1);
+    userSidebarLayout->addWidget(userSidebar, 1, 0, 1, 0);
+
+    userSidebarLayout->addWidget(userSidebar, 1, 0);
+
+    mainLayout->addLayout(userSidebarLayout, 0, 0);
     mainLayout->addWidget(placeholderWidget, 0, 1);
 
     ui->centralWidget->setLayout(mainLayout);

@@ -12,6 +12,7 @@ class PwEntry
 public:
     PwEntry();
     PwEntry(QString username, QString password, QString notes);
+    PwEntry(QByteArray encrypted_data);
 
 private:
     QString username;

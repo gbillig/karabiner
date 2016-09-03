@@ -17,6 +17,13 @@ PwEntry::PwEntry(QString username, QString password, QString notes)
     decrypted = true;
 }
 
+PwEntry::PwEntry(QByteArray encrypted_data)
+    : encrypted_data(encrypted_data)
+{
+    encrypted = true;
+    decrypted = false;
+}
+
 int PwEntry::EncryptEntry(QByteArray key, QByteArray iv) {
 
     // username and password fields cannot be empty

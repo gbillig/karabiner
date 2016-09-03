@@ -11,12 +11,14 @@ User::User(QString username,
            QByteArray auth_salt,
            QByteArray key_salt,
            QByteArray iv,
-           QByteArray auth_hash)
+           QByteArray auth_hash,
+           QVector<PwEntry> password_entries)
     : username(username),
       auth_salt(auth_salt),
       key_salt(key_salt),
       iv(iv),
-      auth_hash(auth_hash)
+      auth_hash(auth_hash),
+      password_entries(password_entries)
 {
 
 }

@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <QString>
 #include <QByteArray>
+#include <QVector>
+#include "../inc/pwentry.h"
 
 class User
 {
@@ -16,7 +18,8 @@ public:
          QByteArray auth_salt,
          QByteArray key_salt,
          QByteArray iv,
-         QByteArray auth_hash);
+         QByteArray auth_hash,
+         QVector<PwEntry> password_entries);
 
     void SetUsername(QString new_username);
     QString GetUsername();
@@ -35,6 +38,8 @@ private:
     QByteArray key_salt;
     QByteArray iv;
     QByteArray auth_hash;
+
+    QVector<PwEntry> password_entries;
 };
 
 #endif // USER_H

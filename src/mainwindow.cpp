@@ -35,7 +35,7 @@ void MainWindow::createUi()
     const QPixmap *new_pixmap = new QPixmap(":/res/create_new-48.png");
     QIcon *new_icon = new QIcon(*new_pixmap);
     QAction *newDocument = new QAction(*new_icon, "New document", this);
-    connect(newDocument, &QAction::triggered, this, &MainWindow::createNew);
+    connect(newDocument, &QAction::triggered, this, &MainWindow::createNewUser);
 
     const QPixmap *open_pixmap = new QPixmap(":/res/opened_folder-48.png");
     QIcon *open_icon = new QIcon(*open_pixmap);
@@ -65,7 +65,7 @@ void MainWindow::createUi()
 
     // create column with list of users
     QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
-    connect(addUser, &QPushButton::clicked, this, &MainWindow::createNew);
+    connect(addUser, &QPushButton::clicked, this, &MainWindow::createNewUser);
 
     QPushButton *removeUser = new QPushButton(*minus_icon, "Remove user", this);
 
@@ -74,8 +74,8 @@ void MainWindow::createUi()
 
     userColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
     userColumn->setModel(userColumnModel);
-    updateSidebar();
-    connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateSidebar);
+    updateUserColumn();
+    connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
 
 
     // create password entry column
@@ -129,14 +129,13 @@ void MainWindow::saveAs()
     }
 }
 
-
-void MainWindow::createNew()
+void MainWindow::createNewUser()
 {
     NewDialog *dialog = new NewDialog(this);
     dialog->exec();
 }
 
-void MainWindow::updateSidebar()
+void MainWindow::updateUserColumn()
 {
     int i;
 
@@ -162,4 +161,15 @@ void MainWindow::updateSidebar()
 
     QModelIndex selectedIndex = userColumnModel->index(selectedRow, 0);
     userColumn->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
+}
+
+void MainWindow::updatePasswordColumn()
+{
+    QStringList passwordStringList = QStringList();
+    QVector<User>* users = userdata->GetUsers();
+
+
+    QVector<PwEntry>* passwords = userdata->GetPasswordEntries();
+
+    passwordColumn
 }

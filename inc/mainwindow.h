@@ -28,9 +28,10 @@ public slots:
 
 private slots:
     void open();
-    void createNew();
+    void createNewUser();
     void saveAs();
-    void updateSidebar();
+    void updateUserColumn();
+    void updatePasswordColumn();
 
 private:
     Ui::MainWindow* ui;

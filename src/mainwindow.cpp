@@ -21,6 +21,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::createUi()
 {
+    // icon resources
+    const QPixmap *plus_pixmap = new QPixmap(":/res/plus-48.png");
+    QIcon *plus_icon = new QIcon(*plus_pixmap);
+    const QPixmap *minus_pixmap = new QPixmap(":/res/minus-48.png");
+    QIcon *minus_icon = new QIcon(*minus_pixmap);
+
+
     // create toolbar
     QToolBar *fileToolBar = addToolBar("File");
 
@@ -56,35 +63,43 @@ void MainWindow::createUi()
     mainLayout = new QGridLayout();
     QWidget* placeholderWidget = new QWidget();
 
-    // create sidebar with list of users
-    const QPixmap *plus_pixmap = new QPixmap(":/res/plus-48.png");
-    QIcon *plus_icon = new QIcon(*plus_pixmap);
-    //QAction *newEntry = new QAction(*plus_icon, "New entry", this);
-    QPushButton *addEntry = new QPushButton(*plus_icon, "Add entry", this);
-    connect(addEntry, &QPushButton::clicked, this, &MainWindow::createNew);
+    // create column with list of users
+    QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
+    connect(addUser, &QPushButton::clicked, this, &MainWindow::createNew);
 
-    const QPixmap *minus_pixmap = new QPixmap(":/res/minus-48.png");
-    QIcon *minus_icon = new QIcon(*minus_pixmap);
-    //QAction *removeEntry = new QAction(*minus_icon, "Remove entry", this);
-    QPushButton *removeEntry = new QPushButton(*minus_icon, "Remove entry", this);
+    QPushButton *removeUser = new QPushButton(*minus_icon, "Remove user", this);
 
-    userSidebar = new QListView(this);
-    userSidebarModel = new QStringListModel(this);
+    userColumn = new QListView(this);
+    userColumnModel = new QStringListModel(this);
 
-    userSidebar->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    userSidebar->setModel(userSidebarModel);
+    userColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    userColumn->setModel(userColumnModel);
     updateSidebar();
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateSidebar);
 
-    QGridLayout* userSidebarLayout = new QGridLayout();
-    userSidebarLayout->addWidget(addEntry, 0, 0);
-    userSidebarLayout->addWidget(removeEntry, 0, 1);
-    userSidebarLayout->addWidget(userSidebar, 1, 0, 1, 0);
 
-    userSidebarLayout->addWidget(userSidebar, 1, 0);
+    // create password entry column
+    QPushButton *addPassword = new QPushButton(*plus_icon, "Add password entry", this);
+    QPushButton *removePassword = new QPushButton(*minus_icon, "Remove password entry", this);
 
-    mainLayout->addLayout(userSidebarLayout, 0, 0);
-    mainLayout->addWidget(placeholderWidget, 0, 1);
+    passwordColumn = new QListView(this);
+    passwordColumnModel= new QStringListModel(this);
+
+    passwordColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    passwordColumn->setModel(passwordColumnModel);
+
+    QGridLayout* userColumnLayout = new QGridLayout();
+    userColumnLayout->addWidget(addUser, 0, 0);
+    userColumnLayout->addWidget(removeUser, 0, 1);
+    userColumnLayout->addWidget(userColumn, 1, 0, 1, 0);
+
+    QGridLayout* passwordColumnLayout = new QGridLayout();
+    passwordColumnLayout->addWidget(addPassword, 0, 0);
+    passwordColumnLayout->addWidget(removePassword, 0, 1);
+    passwordColumnLayout->addWidget(passwordColumn, 1, 0, 1, 0);
+
+    mainLayout->addLayout(userColumnLayout, 0, 0);
+    mainLayout->addLayout(passwordColumnLayout, 0, 1);
 
     ui->centralWidget->setLayout(mainLayout);
 }
@@ -127,7 +142,7 @@ void MainWindow::updateSidebar()
 
     // find the selected row
     int selectedRow = -1;
-    QList<QModelIndex> selectedRowIndexes = userSidebar->selectionModel()->selectedRows();
+    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
     if (selectedRowIndexes.size() > 0) {
         QModelIndex selectedRowIndex = selectedRowIndexes[0];
         selectedRow = selectedRowIndex.row();
@@ -139,12 +154,12 @@ void MainWindow::updateSidebar()
     for (i = 0; i < users->size(); i++ ) {
         userStringList << users->value(i).username;
     }
-    userSidebarModel->setStringList(userStringList);
+    userColumnModel->setStringList(userStringList);
 
     if (selectedRow < 0) {
         return;
     }
 
-    QModelIndex selectedIndex = userSidebarModel->index(selectedRow, 0);
-    userSidebar->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
+    QModelIndex selectedIndex = userColumnModel->index(selectedRow, 0);
+    userColumn->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
 }

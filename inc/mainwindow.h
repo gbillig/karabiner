@@ -40,8 +40,11 @@ private:
 
     QGridLayout* mainLayout;
 
-    QListView* userSidebar;
-    QStringListModel* userSidebarModel;
+    QListView* userColumn;
+    QStringListModel* userColumnModel;
+
+    QListView* passwordColumn;
+    QStringListModel* passwordColumnModel;
 };
 
 #endif // MAINWINDOW_H

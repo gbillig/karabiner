@@ -39,9 +39,34 @@ User::User(QString username, QString password)
     iv = QByteArray("", 32);
     get_random((uint8_t*) iv.data(), 32);
 
-    QByteArray salted_password = password.toLatin1();
-    salted_password.prepend(auth_salt);
-
+    QByteArray salted_password = auth_salt.append(password.toLatin1());
     auth_hash = QByteArray("", 32);
     sha_256((uint8_t*) auth_hash.data(), (uint8_t*) salted_password.data(), salted_password.length() * 8);
+}
+
+// return 0 : auth success
+// return 1 : auth fail
+int User::Authenticate(QString input_password) {
+    QByteArray input_auth_salted_password = auth_salt.append(input_password.toLatin1());
+    QByteArray input_auth_hash = QByteArray("", 32);
+    sha_256((uint8_t*) input_auth_hash.data(), (uint8_t*) input_auth_salted_password.data(), input_auth_salted_password.length() * 8);
+
+    if (input_auth_hash != auth_hash) {
+        return 1;
+    }
+
+    QByteArray key = key_salt.append(input_password.toLatin1());
+    QByteArray key_hash = QByteArray("", 32);
+
+    sha_256((uint8_t*) key_hash.data(), (uint8_t*) key.data(), key.length() * 8);
+
+    DecryptAllPwEntries(key_hash);
+    return 0;
+}
+
+void User::DecryptAllPwEntries(QByteArray key) {
+    int i;
+    for (i = 0; i < password_entries.size(); i++) {
+        password_entries[i].DecryptEntry(key, iv);
+    }
 }

@@ -29,8 +29,10 @@ public:
 
     QVector<PwEntry> password_entries;
 
-private:
+    int Authenticate(QString password);
 
+private:
+    void DecryptAllPwEntries(QByteArray key);
 };
 
 #endif // USER_H

@@ -155,3 +155,15 @@ int UserData::AddNewUser(User user) {
 QVector<User>* UserData::GetUsers() {
     return &users;
 }
+
+User* UserData::GetUser(QString username) {
+    int i;
+    for (i = 0; i < users.size(); i++) {
+        if (users[i].username == username) {
+            return &users[i];
+        }
+    }
+
+    return 0;
+}
+

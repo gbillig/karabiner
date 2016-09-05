@@ -20,6 +20,7 @@ public:
     int AddNewUser(User user);
 
     QVector<User>* GetUsers();
+    User* GetUser(QString username);
 
 signals:
     void userDataChanged();

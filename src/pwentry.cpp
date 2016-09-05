@@ -8,8 +8,9 @@ PwEntry::PwEntry()
     decrypted = false;
 }
 
-PwEntry::PwEntry(QString username, QString password, QString notes)
-    : username(username),
+PwEntry::PwEntry(QString service_name, QString username, QString password, QString notes)
+    : service_name(service_name),
+      username(username),
       password(password),
       notes(notes)
 {
@@ -26,8 +27,8 @@ PwEntry::PwEntry(QByteArray encrypted_data)
 
 int PwEntry::EncryptEntry(QByteArray key, QByteArray iv) {
 
-    // username and password fields cannot be empty
-    if (!username.length() || !password.length()) {
+    // service_name, username, password fields cannot be empty
+    if (!service_name.length() || !username.length() || !password.length()) {
         return 1;
     }
 
@@ -37,7 +38,8 @@ int PwEntry::EncryptEntry(QByteArray key, QByteArray iv) {
     }
 
     // to serialize QString, it takes a quint32 (4 bytes) for size and string in UTF-16 (2 bytes per char)
-    int plaintext_data_length = 4 + 2 * username.length() +
+    int plaintext_data_length = 4 + 2 * service_name.length() +
+                                4 + 2 * username.length() +
                                 4 + 2 * password.length() +
                                 4 + 2 * notes.length();
 
@@ -49,6 +51,7 @@ int PwEntry::EncryptEntry(QByteArray key, QByteArray iv) {
 
     QDataStream data_stream(&plaintext_data, QIODevice::WriteOnly);
 
+    data_stream << service_name;
     data_stream << username;
     data_stream << password;
     data_stream << notes;
@@ -86,6 +89,7 @@ int PwEntry::DecryptEntry(QByteArray key, QByteArray iv) {
 
     QDataStream data_stream(&plaintext_data, QIODevice::ReadOnly);
 
+    data_stream >> service_name;
     data_stream >> username;
     data_stream >> password;
     data_stream >> notes;
@@ -95,6 +99,7 @@ int PwEntry::DecryptEntry(QByteArray key, QByteArray iv) {
 }
 
 int PwEntry::ClearPlaintext() {
+    service_name.clear();
     username.clear();
     password.clear();
     notes.clear();

@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QInputDialog>
 #include "userdata.h"
 
 namespace Ui {
@@ -31,7 +32,7 @@ private slots:
     void createNewUser();
     void saveAs();
     void updateUserColumn();
-    void updatePasswordColumn();
+    void updatePasswordColumn(QItemSelection selected_item, QItemSelection previous_item);
 
 private:
     Ui::MainWindow* ui;

@@ -61,7 +61,6 @@ void MainWindow::createUi()
 
     // create mainwindow layout
     mainLayout = new QGridLayout();
-    QWidget* placeholderWidget = new QWidget();
 
     // create column with list of users
     QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
@@ -76,6 +75,7 @@ void MainWindow::createUi()
     userColumn->setModel(userColumnModel);
     updateUserColumn();
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
+    connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updatePasswordColumn);
 
 
     // create password entry column
@@ -163,13 +163,36 @@ void MainWindow::updateUserColumn()
     userColumn->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
 }
 
-void MainWindow::updatePasswordColumn()
+void MainWindow::updatePasswordColumn(QItemSelection selected_item, QItemSelection previous_item)
 {
+    // find the selected row
+    int selectedRow = selected_item.indexes().first().row();
+    QString selectedUsername = userColumnModel->stringList()[selectedRow];
+
+    User* selectedUser = userdata->GetUser(selectedUsername);
+
+    if (!selectedUser->isDecrypted) {
+        bool authenticated = 0;
+
+        while (!authenticated) {
+            bool accepted;
+            QString password = QInputDialog::getText(this, "Authentication", "Password:",
+                                                     QLineEdit::Password, "", &accepted);
+
+            if (!accepted) {
+                return;
+            }
+
+            authenticated = selectedUser->Authenticate(password);
+        }
+    }
+
     QStringList passwordStringList = QStringList();
-    QVector<User>* users = userdata->GetUsers();
 
+    int i;
+    for (i = 0; i < selectedUser->password_entries.length(); i++) {
+        passwordStringList.append(selectedUser->password_entries[i].service_name);
+    }
 
-    QVector<PwEntry>* passwords = userdata->GetPasswordEntries();
-
-    passwordColumn
+    passwordColumnModel->setStringList(passwordStringList);
 }

@@ -29,7 +29,10 @@ public:
 
     QVector<PwEntry> password_entries;
 
+    bool isDecrypted;
+
     int Authenticate(QString password);
+    int AddPwEntry(PwEntry password_entry);
 
 private:
     void DecryptAllPwEntries(QByteArray key);

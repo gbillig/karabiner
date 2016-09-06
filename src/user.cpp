@@ -18,7 +18,8 @@ User::User(QString username,
       key_salt(key_salt),
       iv(iv),
       auth_hash(auth_hash),
-      password_entries(password_entries)
+      password_entries(password_entries),
+      isDecrypted(false)
 {
 
 }
@@ -26,6 +27,8 @@ User::User(QString username,
 User::User(QString username, QString password)
     : username(username)
 {
+    isDecrypted = false;
+
     // create auth_salt and key_salt
     // generate crypto secure pseudo random number for iv
     // calculate auth_hash with auth_salt + password
@@ -39,29 +42,43 @@ User::User(QString username, QString password)
     iv = QByteArray("", 32);
     get_random((uint8_t*) iv.data(), 32);
 
-    QByteArray salted_password = auth_salt.append(password.toLatin1());
+    QByteArray salted_password = auth_salt + password.toLatin1();
     auth_hash = QByteArray("", 32);
     sha_256((uint8_t*) auth_hash.data(), (uint8_t*) salted_password.data(), salted_password.length() * 8);
 }
 
-// return 0 : auth success
-// return 1 : auth fail
+int User::AddPwEntry(PwEntry password_entry) {
+    int i;
+    for (i = 0; i < password_entries.size(); i++) {
+        if (password_entries[i].service_name == password_entry.service_name) {
+            return 1;
+        }
+    }
+
+    password_entries.append(password_entry);
+    return 0;
+}
+
+// return 1 : auth success
+// return 0 : auth fail
 int User::Authenticate(QString input_password) {
-    QByteArray input_auth_salted_password = auth_salt.append(input_password.toLatin1());
+    QByteArray input_auth_salted_password = auth_salt + input_password.toLatin1();
     QByteArray input_auth_hash = QByteArray("", 32);
     sha_256((uint8_t*) input_auth_hash.data(), (uint8_t*) input_auth_salted_password.data(), input_auth_salted_password.length() * 8);
 
     if (input_auth_hash != auth_hash) {
-        return 1;
+        return 0;
     }
 
-    QByteArray key = key_salt.append(input_password.toLatin1());
+    QByteArray key = key_salt + input_password.toLatin1();
     QByteArray key_hash = QByteArray("", 32);
 
     sha_256((uint8_t*) key_hash.data(), (uint8_t*) key.data(), key.length() * 8);
 
     DecryptAllPwEntries(key_hash);
-    return 0;
+    isDecrypted = true;
+
+    return 1;
 }
 
 void User::DecryptAllPwEntries(QByteArray key) {

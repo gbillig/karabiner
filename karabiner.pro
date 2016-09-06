@@ -16,22 +16,22 @@ LIBS += -L../lib/ -lglbcrypto
 SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/newdialog.cpp \
     src/user.cpp \
     src/userdata.cpp \
     src/pwentry.cpp \
-    src/passworddialog.cpp
+    src/passworddialog.cpp \
+    src/newuserdialog.cpp
 
 HEADERS += \
     inc/mainwindow.h \
     inc/userdata.h \
     inc/user.h \
-    inc/newdialog.h \
     inc/glbcrypto/misc.h \
     inc/glbcrypto/aes.h \
     inc/glbcrypto/sha.h \
     inc/pwentry.h \
-    inc/passworddialog.h
+    inc/passworddialog.h \
+    inc/newuserdialog.h
 
 
 FORMS += \

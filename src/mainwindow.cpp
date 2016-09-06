@@ -1,5 +1,5 @@
 #include "../inc/mainwindow.h"
-#include "../inc/newdialog.h"
+#include "../inc/newuserdialog.h"
 #include "../build/ui_mainwindow.h"
 #include "../inc/user.h"
 #include "../inc/userdata.h"
@@ -131,7 +131,7 @@ void MainWindow::saveAs()
 
 void MainWindow::createNewUser()
 {
-    NewDialog *dialog = new NewDialog(this);
+    NewUserDialog *dialog = new NewUserDialog(this);
     dialog->exec();
 }
 

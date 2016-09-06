@@ -1,7 +1,7 @@
-#include "../inc/newdialog.h"
+#include "../inc/newuserdialog.h"
 #include <QtWidgets>
 
-NewDialog::NewDialog(QWidget *parent)
+NewUserDialog::NewUserDialog(QWidget *parent)
       : QDialog(parent),
         userdata(UserData::GetInstance())
 {
@@ -42,7 +42,7 @@ NewDialog::NewDialog(QWidget *parent)
                                    | QDialogButtonBox::Cancel,
                                      Qt::Horizontal);
 
-     connect(buttonBox, &QDialogButtonBox::accepted, this, &NewDialog::accept);
+     connect(buttonBox, &QDialogButtonBox::accepted, this, &NewUserDialog::accept);
      connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     QVBoxLayout *cryptoBoxLayout = new QVBoxLayout;
@@ -79,7 +79,7 @@ NewDialog::NewDialog(QWidget *parent)
     setLayout(mainLayout);
 }
 
-void NewDialog::accept() {
+void NewUserDialog::accept() {
 
     if (passwordEdit->text() != passwordConfirmEdit->text()) {
         // passwords do not match

@@ -11,12 +11,12 @@
 #include "userdata.h"
 
 
-class NewDialog : public QDialog
+class NewUserDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    NewDialog(QWidget *parent = 0);
+    NewUserDialog(QWidget *parent = 0);
 
 private slots:
     void accept();

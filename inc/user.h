@@ -12,9 +12,9 @@ class User
 
 public:
     enum AuthenticateFlag {
-        Authenticate = 0x0000,
-        Encrypt      = 0x0001,
-        Decrypt      = 0x0002
+        Auth    = 0x0000,
+        Encrypt = 0x0001,
+        Decrypt = 0x0002
     };
 
     User();
@@ -37,7 +37,7 @@ public:
 
     bool isDecrypted;
 
-    int Authenticate(QString password, AuthenticateFlag auth_mode);
+    int Authenticate(QString password, User::AuthenticateFlag auth_mode);
     int AddPwEntry(PwEntry password_entry);
 
 private:

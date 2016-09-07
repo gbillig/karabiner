@@ -11,7 +11,12 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QInputDialog>
-#include "userdata.h"
+
+#include "../inc/userdata.h"
+#include "../inc/newuserdialog.h"
+#include "../inc/newpassworddialog.h"
+#include "../build/ui_mainwindow.h"
+#include "../inc/user.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +29,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    QListView* userColumn;
+    QStringListModel* userColumnModel;
 
 public slots:
 
@@ -42,9 +50,6 @@ private:
     UserData* userdata;
 
     QGridLayout* mainLayout;
-
-    QListView* userColumn;
-    QStringListModel* userColumnModel;
 
     QListView* passwordColumn;
     QStringListModel* passwordColumnModel;

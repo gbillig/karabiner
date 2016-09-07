@@ -1,9 +1,4 @@
 #include "../inc/mainwindow.h"
-#include "../inc/newuserdialog.h"
-#include "../inc/newpassworddialog.h"
-#include "../build/ui_mainwindow.h"
-#include "../inc/user.h"
-#include "../inc/userdata.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

@@ -6,6 +6,8 @@
 #include <QFile>
 #include <QDataStream>
 #include <QVector>
+#include <QApplication>
+#include <QStringList>
 
 class UserData : public QObject
 {

@@ -41,7 +41,7 @@ private slots:
     void createNewPassword();
     void saveAs();
     void updateUserColumn();
-    void updatePasswordColumn(QItemSelection selected_item, QItemSelection previous_item);
+    void updatePasswordColumn();
 
 private:
     Ui::MainWindow* ui;

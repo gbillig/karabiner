@@ -27,6 +27,7 @@ public:
 
 signals:
     void userDataChanged();
+    void PwEntryChanged();
 
 private:
     static UserData *userdata_instance;

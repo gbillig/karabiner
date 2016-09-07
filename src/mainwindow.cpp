@@ -73,7 +73,6 @@ void MainWindow::createUi()
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
     connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updatePasswordColumn);
 
-
     // create password entry column
     QPushButton *addPassword = new QPushButton(*plus_icon, "Add password entry", this);
     connect(addPassword, &QPushButton::clicked, this, &MainWindow::createNewPassword);
@@ -84,6 +83,7 @@ void MainWindow::createUi()
 
     passwordColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
     passwordColumn->setModel(passwordColumnModel);
+    connect(userdata, &UserData::PwEntryChanged, this, &MainWindow::updatePasswordColumn);
 
     QGridLayout* userColumnLayout = new QGridLayout();
     userColumnLayout->addWidget(addUser, 0, 0);
@@ -166,10 +166,16 @@ void MainWindow::updateUserColumn()
     userColumn->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
 }
 
-void MainWindow::updatePasswordColumn(QItemSelection selected_item, QItemSelection previous_item)
+void MainWindow::updatePasswordColumn()
 {
     // find the selected row
-    int selectedRow = selected_item.indexes().first().row();
+    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
+
+    if (selectedRowIndexes.size() == 0) {
+        return;
+    }
+
+    int selectedRow = selectedRowIndexes[0].row();
     QString selectedUsername = userColumnModel->stringList()[selectedRow];
 
     User* selectedUser = userdata->GetUser(selectedUsername);
@@ -183,6 +189,7 @@ void MainWindow::updatePasswordColumn(QItemSelection selected_item, QItemSelecti
                                                      QLineEdit::Password, "", &accepted);
 
             if (!accepted) {
+                passwordColumnModel->setStringList(QStringList());
                 return;
             }
 

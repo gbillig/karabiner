@@ -179,6 +179,7 @@ int UserData::AddNewPwEntry(PwEntry password_entry) {
 
     User* selectedUser = GetUser(selectedUserString);
     selectedUser->AddPwEntry(password_entry);
+    emit PwEntryChanged();
 
     return 0;
 }

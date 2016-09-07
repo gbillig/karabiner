@@ -61,7 +61,7 @@ int User::AddPwEntry(PwEntry password_entry) {
 
 // return 1 : auth success
 // return 0 : auth fail
-int User::Authenticate(QString input_password) {
+int User::Authenticate(QString input_password, AuthenticateFlag auth_mode) {
     QByteArray input_auth_salted_password = auth_salt + input_password.toLatin1();
     QByteArray input_auth_hash = QByteArray("", 32);
     sha_256((uint8_t*) input_auth_hash.data(), (uint8_t*) input_auth_salted_password.data(), input_auth_salted_password.length() * 8);
@@ -70,20 +70,37 @@ int User::Authenticate(QString input_password) {
         return 0;
     }
 
-    QByteArray key = key_salt + input_password.toLatin1();
-    QByteArray key_hash = QByteArray("", 32);
-
-    sha_256((uint8_t*) key_hash.data(), (uint8_t*) key.data(), key.length() * 8);
-
-    DecryptAllPwEntries(key_hash);
-    isDecrypted = true;
+    if (auth_mode == Encrypt) {
+        EncryptAllPwEntries(input_password);
+    } else if (auth_mode == Decrypt) {
+        DecryptAllPwEntries(input_password);
+    }
 
     return 1;
 }
 
-void User::DecryptAllPwEntries(QByteArray key) {
+void User::EncryptAllPwEntries(QString password) {
+    QByteArray key = key_salt + password.toLatin1();
+    QByteArray key_hash = QByteArray("", 32);
+
+    sha_256((uint8_t*) key_hash.data(), (uint8_t*) key.data(), key.length() * 8);
+
+    int i;
+    for (i = 0; i < password_entries.size(); i++) {
+        password_entries[i].EncryptEntry(key, iv);
+    }
+}
+
+void User::DecryptAllPwEntries(QString password) {
+    QByteArray key = key_salt + password.toLatin1();
+    QByteArray key_hash = QByteArray("", 32);
+
+    sha_256((uint8_t*) key_hash.data(), (uint8_t*) key.data(), key.length() * 8);
+
     int i;
     for (i = 0; i < password_entries.size(); i++) {
         password_entries[i].DecryptEntry(key, iv);
     }
+
+    isDecrypted = true;
 }

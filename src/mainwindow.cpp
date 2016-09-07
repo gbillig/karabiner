@@ -193,7 +193,7 @@ void MainWindow::updatePasswordColumn()
                 return;
             }
 
-            authenticated = selectedUser->Authenticate(password);
+            authenticated = selectedUser->Authenticate(password, User::Decrypt);
         }
     }
 

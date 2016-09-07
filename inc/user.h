@@ -11,6 +11,12 @@ class User
 {
 
 public:
+    enum AuthenticateFlag {
+        Authenticate = 0x0000,
+        Encrypt      = 0x0001,
+        Decrypt      = 0x0002
+    };
+
     User();
     User(QString username,
          QString password);
@@ -31,11 +37,12 @@ public:
 
     bool isDecrypted;
 
-    int Authenticate(QString password);
+    int Authenticate(QString password, AuthenticateFlag auth_mode);
     int AddPwEntry(PwEntry password_entry);
 
 private:
-    void DecryptAllPwEntries(QByteArray key);
+    void EncryptAllPwEntries(QString password);
+    void DecryptAllPwEntries(QString password);
 };
 
 #endif // USER_H

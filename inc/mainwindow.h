@@ -30,6 +30,7 @@ public slots:
 private slots:
     void open();
     void createNewUser();
+    void createNewPassword();
     void saveAs();
     void updateUserColumn();
     void updatePasswordColumn(QItemSelection selected_item, QItemSelection previous_item);

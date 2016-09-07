@@ -136,7 +136,6 @@ int UserData::SaveUserFile(QString filepath) {
 }
 
 int UserData::AddNewUser(User user) {
-
     int i;
 
     for (i = 0; i < users.size(); i++) {
@@ -149,6 +148,10 @@ int UserData::AddNewUser(User user) {
     users.append(user);
     emit userDataChanged();
 
+    return 0;
+}
+
+int UserData::AddNewPwEntry(PwEntry password_entry) {
     return 0;
 }
 

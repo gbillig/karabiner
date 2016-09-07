@@ -19,8 +19,8 @@ SOURCES += \
     src/user.cpp \
     src/userdata.cpp \
     src/pwentry.cpp \
-    src/passworddialog.cpp \
-    src/newuserdialog.cpp
+    src/newuserdialog.cpp \
+    src/newpassworddialog.cpp
 
 HEADERS += \
     inc/mainwindow.h \
@@ -30,8 +30,8 @@ HEADERS += \
     inc/glbcrypto/aes.h \
     inc/glbcrypto/sha.h \
     inc/pwentry.h \
-    inc/passworddialog.h \
-    inc/newuserdialog.h
+    inc/newuserdialog.h \
+    inc/newpassworddialog.h
 
 
 FORMS += \

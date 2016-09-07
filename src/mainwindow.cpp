@@ -1,5 +1,6 @@
 #include "../inc/mainwindow.h"
 #include "../inc/newuserdialog.h"
+#include "../inc/newpassworddialog.h"
 #include "../build/ui_mainwindow.h"
 #include "../inc/user.h"
 #include "../inc/userdata.h"
@@ -80,6 +81,7 @@ void MainWindow::createUi()
 
     // create password entry column
     QPushButton *addPassword = new QPushButton(*plus_icon, "Add password entry", this);
+    connect(addPassword, &QPushButton::clicked, this, &MainWindow::createNewPassword);
     QPushButton *removePassword = new QPushButton(*minus_icon, "Remove password entry", this);
 
     passwordColumn = new QListView(this);
@@ -132,6 +134,12 @@ void MainWindow::saveAs()
 void MainWindow::createNewUser()
 {
     NewUserDialog *dialog = new NewUserDialog(this);
+    dialog->exec();
+}
+
+void MainWindow::createNewPassword()
+{
+    NewPasswordDialog *dialog = new NewPasswordDialog(this);
     dialog->exec();
 }
 

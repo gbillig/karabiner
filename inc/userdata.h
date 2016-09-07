@@ -18,6 +18,7 @@ public:
     int SaveUserFile(QString filepath);
     int ParseUserFile(QString filepath);
     int AddNewUser(User user);
+    int AddNewPwEntry(PwEntry password_entry);
 
     QVector<User>* GetUsers();
     User* GetUser(QString username);

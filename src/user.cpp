@@ -39,8 +39,8 @@ User::User(QString username, QString password)
     key_salt = QByteArray("", 32);
     get_random((uint8_t*) key_salt.data(), 32);
 
-    iv = QByteArray("", 32);
-    get_random((uint8_t*) iv.data(), 32);
+    iv = QByteArray("", 16);
+    get_random((uint8_t*) iv.data(), 16);
 
     QByteArray salted_password = auth_salt + password.toLatin1();
     auth_hash = QByteArray("", 32);
@@ -87,7 +87,7 @@ void User::EncryptAllPwEntries(QString password) {
 
     int i;
     for (i = 0; i < password_entries.size(); i++) {
-        password_entries[i].EncryptEntry(key, iv);
+        password_entries[i].EncryptEntry(key_hash, iv);
     }
 }
 
@@ -99,7 +99,7 @@ void User::DecryptAllPwEntries(QString password) {
 
     int i;
     for (i = 0; i < password_entries.size(); i++) {
-        password_entries[i].DecryptEntry(key, iv);
+        password_entries[i].DecryptEntry(key_hash, iv);
     }
 
     isDecrypted = true;

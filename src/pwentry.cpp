@@ -44,7 +44,7 @@ int PwEntry::EncryptEntry(QByteArray key, QByteArray iv) {
                                 4 + 2 * notes.length();
 
     // round up to to the nearest multiple of 16
-    int plaintext_data_length_with_pad = (plaintext_data_length / 16) * 16;
+    int plaintext_data_length_with_pad = (plaintext_data_length / 16 + 1) * 16;
 
     QByteArray plaintext_data = QByteArray("", plaintext_data_length);
     QByteArray plaintext_data_pad = QByteArray("", plaintext_data_length_with_pad);
@@ -58,7 +58,7 @@ int PwEntry::EncryptEntry(QByteArray key, QByteArray iv) {
 
     pad_message((uint8_t*) plaintext_data_pad.data(), (uint8_t*) plaintext_data.data(), plaintext_data_length, 16);
 
-    encrypted_data = QByteArray("", 32);
+    encrypted_data = QByteArray("", plaintext_data_pad.length());
 
     aes_256_cbc((uint8_t*) encrypted_data.data(), (uint8_t*) plaintext_data_pad.data(), plaintext_data_pad.size(),
                 (uint8_t*) iv.data(), (uint8_t*) key.data(), key.size(), 0);

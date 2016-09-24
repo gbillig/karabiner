@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QInputDialog>
+#include <QSplitter>
 
 #include "../inc/userdata.h"
 #include "../inc/newuserdialog.h"

@@ -7,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     createUi();
-
 }
 
 MainWindow::~MainWindow()
@@ -95,9 +94,18 @@ void MainWindow::createUi()
     passwordColumnLayout->addWidget(removePassword, 0, 1);
     passwordColumnLayout->addWidget(passwordColumn, 1, 0, 1, 0);
 
-    mainLayout->addLayout(userColumnLayout, 0, 0);
-    mainLayout->addLayout(passwordColumnLayout, 0, 1);
+    QWidget* userSection = new QWidget();
+    userSection->setLayout(userColumnLayout);
+    QWidget* passwordSection = new QWidget();
+    passwordSection->setLayout(passwordColumnLayout);
 
+    QSplitter* mainSplitter = new QSplitter();
+    mainSplitter->addWidget(userSection);
+    mainSplitter->addWidget(passwordSection);
+
+    mainLayout->addWidget(mainSplitter);
+    //mainLayout->addLayout(userColumnLayout, 0, 0);
+    //mainLayout->addLayout(passwordColumnLayout, 0, 1);
     ui->centralWidget->setLayout(mainLayout);
 }
 

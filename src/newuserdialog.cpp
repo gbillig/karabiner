@@ -1,5 +1,7 @@
 #include "../inc/newuserdialog.h"
-#include <QtWidgets>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
 
 NewUserDialog::NewUserDialog(QWidget *parent)
       : QDialog(parent),

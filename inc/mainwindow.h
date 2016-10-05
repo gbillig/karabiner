@@ -12,6 +12,7 @@
 #include <QPushButton>
 #include <QInputDialog>
 #include <QSplitter>
+#include <QFont>
 
 #include "../inc/userdata.h"
 #include "../inc/newuserdialog.h"
@@ -43,6 +44,7 @@ private slots:
     void saveAs();
     void updateUserColumn();
     void updatePasswordColumn();
+    void updateDetailsPane();
 
 private:
     Ui::MainWindow* ui;
@@ -54,6 +56,11 @@ private:
 
     QListView* passwordColumn;
     QStringListModel* passwordColumnModel;
+
+    QLabel* serviceName;
+    QLabel* username;
+    QLabel* password;
+    QLabel* notes;
 };
 
 #endif // MAINWINDOW_H

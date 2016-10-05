@@ -55,19 +55,21 @@ void MainWindow::createUi()
     fileToolBar->addActions(*actions);
 
     // create mainwindow layout
-    mainLayout = new QGridLayout();
+    mainLayout = new QGridLayout;
 
     // create column with list of users
     QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
     connect(addUser, &QPushButton::clicked, this, &MainWindow::createNewUser);
-
     QPushButton *removeUser = new QPushButton(*minus_icon, "Remove user", this);
 
-    userColumn = new QListView(this);
-    userColumnModel = new QStringListModel(this);
+    userColumn = new QListView;
+    userColumnModel = new QStringListModel;
+    QFont* columnFont = new QFont;
+    columnFont->setPointSize(14);
 
     userColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
     userColumn->setModel(userColumnModel);
+    userColumn->setFont(*columnFont);
     updateUserColumn();
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
     connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updatePasswordColumn);
@@ -77,35 +79,52 @@ void MainWindow::createUi()
     connect(addPassword, &QPushButton::clicked, this, &MainWindow::createNewPassword);
     QPushButton *removePassword = new QPushButton(*minus_icon, "Remove password entry", this);
 
-    passwordColumn = new QListView(this);
-    passwordColumnModel= new QStringListModel(this);
+    passwordColumn = new QListView;
+    passwordColumnModel= new QStringListModel;
 
     passwordColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
     passwordColumn->setModel(passwordColumnModel);
+    passwordColumn->setFont(*columnFont);
     connect(userdata, &UserData::PwEntryChanged, this, &MainWindow::updatePasswordColumn);
 
-    QGridLayout* userColumnLayout = new QGridLayout();
+    // create details panel
+    serviceName = new QLabel;
+    username = new QLabel;
+    password = new QLabel;
+    notes = new QLabel;
+    connect(passwordColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updateDetailsPane);
+
+    QGridLayout* userColumnLayout = new QGridLayout;
     userColumnLayout->addWidget(addUser, 0, 0);
     userColumnLayout->addWidget(removeUser, 0, 1);
     userColumnLayout->addWidget(userColumn, 1, 0, 1, 0);
 
-    QGridLayout* passwordColumnLayout = new QGridLayout();
+    QGridLayout* passwordColumnLayout = new QGridLayout;
     passwordColumnLayout->addWidget(addPassword, 0, 0);
     passwordColumnLayout->addWidget(removePassword, 0, 1);
     passwordColumnLayout->addWidget(passwordColumn, 1, 0, 1, 0);
 
-    QWidget* userSection = new QWidget();
-    userSection->setLayout(userColumnLayout);
-    QWidget* passwordSection = new QWidget();
-    passwordSection->setLayout(passwordColumnLayout);
+    QFormLayout* detailsLayout = new QFormLayout;
+    detailsLayout->addRow(tr("Service name:"), serviceName);
+    detailsLayout->addRow(tr("Username:"), username);
+    detailsLayout->addRow(tr("Password:"), password);
+    detailsLayout->addRow(tr("Notes:"), notes);
 
-    QSplitter* mainSplitter = new QSplitter();
+    QWidget* userSection = new QWidget;
+    userSection->setLayout(userColumnLayout);
+    QWidget* passwordSection = new QWidget;
+    passwordSection->setLayout(passwordColumnLayout);
+    QWidget* detailsSection = new QWidget;
+    detailsSection->setLayout(detailsLayout);
+    int buttonHeight = addUser->height();
+    detailsSection->setContentsMargins(0, buttonHeight + 4, 0, 0);
+
+    QSplitter* mainSplitter = new QSplitter;
     mainSplitter->addWidget(userSection);
     mainSplitter->addWidget(passwordSection);
+    mainSplitter->addWidget(detailsSection);
 
     mainLayout->addWidget(mainSplitter);
-    //mainLayout->addLayout(userColumnLayout, 0, 0);
-    //mainLayout->addLayout(passwordColumnLayout, 0, 1);
     ui->centralWidget->setLayout(mainLayout);
 }
 
@@ -213,4 +232,34 @@ void MainWindow::updatePasswordColumn()
     }
 
     passwordColumnModel->setStringList(passwordStringList);
+}
+
+void MainWindow::updateDetailsPane()
+{
+    // find the selected user
+    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
+
+    if (selectedRowIndexes.size() == 0) {
+        return;
+    }
+
+    int selectedRow = selectedRowIndexes[0].row();
+    QString selectedUsername = userColumnModel->stringList()[selectedRow];
+
+    User* selectedUser = userdata->GetUser(selectedUsername);
+
+    // find the selected password entry
+    selectedRowIndexes = passwordColumn->selectionModel()->selectedRows();
+
+    if (selectedRowIndexes.size() == 0) {
+        return;
+    }
+
+    selectedRow = selectedRowIndexes[0].row();
+    PwEntry selectedPwEntry = selectedUser->password_entries[selectedRow];
+
+    serviceName->setText(selectedPwEntry.service_name);
+    username->setText(selectedPwEntry.username);
+    password->setText(selectedPwEntry.password);
+    notes->setText(selectedPwEntry.notes);
 }

@@ -1,6 +1,11 @@
 #ifndef NEWDIALOG_H
 #define NEWDIALOG_H
 
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QFormLayout>
+
 #include <QDialog>
 #include <QRadioButton>
 #include <QLabel>
@@ -24,11 +29,8 @@ private slots:
 private:
     UserData *userdata;
 
-    QLabel *usernameLabel;
     QLineEdit *usernameEdit;
-    QLabel *passwordLabel;
     QLineEdit *passwordEdit;
-    QLabel *passwordConfirmLabel;
     QLineEdit *passwordConfirmEdit;
     QGroupBox *cryptoBox;
     QRadioButton *Aes128RadioButton;

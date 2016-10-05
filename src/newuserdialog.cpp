@@ -1,23 +1,19 @@
 #include "../inc/newuserdialog.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QGridLayout>
+
 
 NewUserDialog::NewUserDialog(QWidget *parent)
       : QDialog(parent),
         userdata(UserData::GetInstance())
 {
-    usernameLabel = new QLabel(tr("&Username:"));
     usernameEdit = new QLineEdit;
-    usernameLabel->setBuddy(usernameEdit);
-
-    passwordLabel = new QLabel(tr("&Password:"));
     passwordEdit = new QLineEdit;
-    passwordLabel->setBuddy(passwordEdit);
-
-    passwordConfirmLabel = new QLabel(tr("&Confirm Password:"));
     passwordConfirmEdit = new QLineEdit;
-    passwordConfirmLabel->setBuddy(passwordConfirmEdit);
+
+
+    QFormLayout *accountFormLayout = new QFormLayout;
+    accountFormLayout->addRow(tr("&Username:"), usernameEdit);
+    accountFormLayout->addRow(tr("&Password:"), passwordEdit);
+    accountFormLayout->addRow(tr("&Confirm Password:"), passwordConfirmEdit);
 
     cryptoBox = new QGroupBox(tr("Encryption algorithm"));
     Aes128RadioButton = new QRadioButton(tr("AES-128"));
@@ -44,8 +40,8 @@ NewUserDialog::NewUserDialog(QWidget *parent)
                                    | QDialogButtonBox::Cancel,
                                      Qt::Horizontal);
 
-     connect(buttonBox, &QDialogButtonBox::accepted, this, &NewUserDialog::accept);
-     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &NewUserDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     QVBoxLayout *cryptoBoxLayout = new QVBoxLayout;
     cryptoBoxLayout->addWidget(Aes128RadioButton);
@@ -59,25 +55,11 @@ NewUserDialog::NewUserDialog(QWidget *parent)
     hashBoxLayout->addWidget(Sha512RadioButton);
     hashBox->setLayout(hashBoxLayout);
 
-    QHBoxLayout *usernameLayout = new QHBoxLayout;
-    usernameLayout->addWidget(usernameLabel);
-    usernameLayout->addWidget(usernameEdit);
-
-    QHBoxLayout *passwordLayout = new QHBoxLayout;
-    passwordLayout->addWidget(passwordLabel);
-    passwordLayout->addWidget(passwordEdit);
-
-    QHBoxLayout *passwordConfirmLayout = new QHBoxLayout;
-    passwordConfirmLayout->addWidget(passwordConfirmLabel);
-    passwordConfirmLayout->addWidget(passwordConfirmEdit);
-
     QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addLayout(usernameLayout, 0, 0, 1, -1);
-    mainLayout->addLayout(passwordLayout, 1, 0, 1, -1);
-    mainLayout->addLayout(passwordConfirmLayout, 2, 0, 1, -1);
-    mainLayout->addWidget(cryptoBox, 3, 0);
-    mainLayout->addWidget(hashBox, 3, 1);
-    mainLayout->addWidget(buttonBox, 4, 0, 1, -1);
+    mainLayout->addLayout(accountFormLayout, 0, 0, 1, -1);
+    mainLayout->addWidget(cryptoBox, 1, 0);
+    mainLayout->addWidget(hashBox, 1, 1);
+    mainLayout->addWidget(buttonBox, 2, 0, 1, -1);
     setLayout(mainLayout);
 }
 

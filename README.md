@@ -34,7 +34,6 @@ After you successfully built the project, you will find the Karabiner binary in 
 
 * glbcrypto - A library that implements cryptographic functions. Available [here](https://github.com/gbillig/glbcrypto).
 * Qt - A cross-platform application framework. Available [here](https://www.qt.io).
-* Atom - ergaerga
 
 ## Authors
 

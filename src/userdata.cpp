@@ -119,7 +119,7 @@ int UserData::SaveUserFile(QString filepath) {
         while (!authenticated) {
             bool accepted;
 
-            // -----------
+            // TODO: Refactor ---
             MainWindow* mainWindow;
             QWidgetList widgets = QApplication::topLevelWidgets();
             for (QWidgetList::iterator i = widgets.begin(); i != widgets.end(); ++i) {

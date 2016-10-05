@@ -4,9 +4,9 @@ NewPasswordDialog::NewPasswordDialog(QWidget *parent)
       : QDialog(parent),
         userdata(UserData::GetInstance())
 {
-    serviceNameEdit = new QLineEdit(this);
-    usernameEdit = new QLineEdit(this);
-    passwordEdit = new QLineEdit(this);
+    serviceNameEdit = new QLineEdit;
+    usernameEdit = new QLineEdit;
+    passwordEdit = new QLineEdit;
 
     QFormLayout *pwEntryFormLayout = new QFormLayout;
     pwEntryFormLayout->addRow(tr("&Service name:"), serviceNameEdit);
@@ -24,6 +24,7 @@ NewPasswordDialog::NewPasswordDialog(QWidget *parent)
     mainLayout->addLayout(pwEntryFormLayout, 0, 0, 1, -1);
     mainLayout->addWidget(buttonBox, 1, 0, 1, -1);
     setLayout(mainLayout);
+    setWindowTitle(tr("Add password entry"));
 }
 
 void NewPasswordDialog::accept()

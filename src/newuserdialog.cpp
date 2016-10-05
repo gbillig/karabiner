@@ -61,17 +61,29 @@ NewUserDialog::NewUserDialog(QWidget *parent)
     mainLayout->addWidget(hashBox, 1, 1);
     mainLayout->addWidget(buttonBox, 2, 0, 1, -1);
     setLayout(mainLayout);
+    setWindowTitle(tr("Add user"));
 }
 
 void NewUserDialog::accept() {
 
-    if (passwordEdit->text() != passwordConfirmEdit->text()) {
+    QString username = usernameEdit->text();
+    QString password = passwordEdit->text();
+
+    if (username == "") {
+        // password field is emtpy
+        return;
+    }
+
+    if (password == "") {
+        // password field is empty
+        return;
+    }
+
+    if (password != passwordConfirmEdit->text()) {
         // passwords do not match
         return;
     }
 
-    QString username = usernameEdit->text();
-    QString password = passwordEdit->text();
     User *newUser = new User(username, password);
     userdata->AddNewUser(*newUser);
     done(QDialog::Accepted);

@@ -49,7 +49,7 @@ int UserData::ParseUserFile(QString filepath)
     QVector<User> new_users;
     QVector<PwEntry> password_entries;
 
-    int i, j;
+    int i, j, rval;
     for (i = 0; i < num_users; i++) {
         file_stream >> username;
         file_stream >> auth_salt;
@@ -83,8 +83,14 @@ int UserData::ParseUserFile(QString filepath)
         return 1;
     }
 
-    users = new_users;
-    emit userDataChanged();
+    // add parsed users to userdata
+    for (i = 0; i < new_users.length(); i++) {
+        rval = AddNewUser(new_users[i]);
+        if (rval != 0) {
+            // unable to add new user to userdata
+            return 1;
+        }
+    }
 
     return 0;
 }
@@ -168,7 +174,6 @@ int UserData::SaveUserFile(QString filepath) {
 
 int UserData::AddNewUser(User user) {
     int i;
-
     for (i = 0; i < users.size(); i++) {
         if (users[i].username == user.username) {
             // user with this username already exists!
@@ -180,6 +185,20 @@ int UserData::AddNewUser(User user) {
     emit userDataChanged();
 
     return 0;
+}
+
+int UserData::DeleteUser(QString username) {
+    int i;
+    for (i = 0; i < users.size(); i++) {
+        if (users[i].username == username) {
+            users.remove(i);
+            emit userDataChanged();
+            return 0;
+        }
+    }
+
+    // user not found
+    return 1;
 }
 
 int UserData::AddNewPwEntry(PwEntry password_entry) {

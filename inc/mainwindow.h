@@ -40,6 +40,7 @@ public slots:
 private slots:
     void open();
     void createNewUser();
+    void deleteUser();
     void createNewPassword();
     void saveAs();
     void updateUserColumn();

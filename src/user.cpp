@@ -2,10 +2,7 @@
 #include "../inc/glbcrypto/misc.h"
 #include "../inc/glbcrypto/sha.h"
 
-User::User()
-{
-
-}
+User::User() {}
 
 User::User(QString username,
            QByteArray auth_salt,

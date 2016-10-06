@@ -14,8 +14,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::createUi()
-{
+void MainWindow::createUi() {
     // icon resources
     const QPixmap *plus_pixmap = new QPixmap(":/res/plus-48.png");
     QIcon *plus_icon = new QIcon(*plus_pixmap);
@@ -61,6 +60,7 @@ void MainWindow::createUi()
     QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
     connect(addUser, &QPushButton::clicked, this, &MainWindow::createNewUser);
     QPushButton *removeUser = new QPushButton(*minus_icon, "Remove user", this);
+    connect(removeUser, &QPushButton::clicked, this, &MainWindow::deleteUser);
 
     userColumn = new QListView;
     userColumnModel = new QStringListModel;
@@ -128,8 +128,7 @@ void MainWindow::createUi()
     ui->centralWidget->setLayout(mainLayout);
 }
 
-void MainWindow::open()
-{
+void MainWindow::open() {
     int rval;
     QString filePath = QFileDialog::getOpenFileName(this);
     if (!filePath.isEmpty()) {
@@ -143,30 +142,42 @@ void MainWindow::open()
     }
 }
 
-void MainWindow::saveAs()
-{
-    QFileDialog saveAsDialog(this);
-    saveAsDialog.setFileMode(QFileDialog::AnyFile);
-    QString filePath = saveAsDialog.getSaveFileName(this);
+void MainWindow::saveAs() {
+    QString filePath = QFileDialog::getSaveFileName(this, tr("Save File As"),
+                                                    Q_NULLPTR,
+                                                    tr("Karabiner Account File (*.kbr)"));
+
     if (!filePath.isEmpty()) {
         userdata->SaveUserFile(filePath);
     }
 }
 
-void MainWindow::createNewUser()
-{
+
+
+void MainWindow::createNewUser() {
     NewUserDialog *dialog = new NewUserDialog(this);
     dialog->exec();
 }
 
-void MainWindow::createNewPassword()
-{
+void MainWindow::deleteUser() {
+    // find the selected user
+    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
+
+    if (selectedRowIndexes.size() == 0) {
+        return;
+    }
+
+    int selectedRow = selectedRowIndexes[0].row();
+    QString selectedUsername = userColumnModel->stringList()[selectedRow];
+    userdata->DeleteUser(selectedUsername);
+}
+
+void MainWindow::createNewPassword() {
     NewPasswordDialog *dialog = new NewPasswordDialog(this);
     dialog->exec();
 }
 
-void MainWindow::updateUserColumn()
-{
+void MainWindow::updateUserColumn() {
     int i;
 
     // find the selected row
@@ -193,8 +204,7 @@ void MainWindow::updateUserColumn()
     userColumn->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
 }
 
-void MainWindow::updatePasswordColumn()
-{
+void MainWindow::updatePasswordColumn() {
     // find the selected row
     QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
 
@@ -234,8 +244,7 @@ void MainWindow::updatePasswordColumn()
     passwordColumnModel->setStringList(passwordStringList);
 }
 
-void MainWindow::updateDetailsPane()
-{
+void MainWindow::updateDetailsPane() {
     // find the selected user
     QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
 

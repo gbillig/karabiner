@@ -27,7 +27,7 @@ public:
     User* GetUser(QString username);
 
 signals:
-    void userDataChanged();
+    void userDataChanged(QString newUsername);
     void PwEntryChanged();
 
 private:

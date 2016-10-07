@@ -43,7 +43,7 @@ private slots:
     void deleteUser();
     void createNewPassword();
     void saveAs();
-    void updateUserColumn();
+    void updateUserColumn(QString newUsername);
     void updatePasswordColumn();
     void updateDetailsPane();
 
@@ -62,6 +62,8 @@ private:
     QLabel* username;
     QLabel* password;
     QLabel* notes;
+
+    void clearPasswordColumn();
 };
 
 #endif // MAINWINDOW_H

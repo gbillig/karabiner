@@ -83,6 +83,8 @@ int UserData::ParseUserFile(QString filepath)
         return 1;
     }
 
+    users.clear();
+
     // add parsed users to userdata
     for (i = 0; i < new_users.length(); i++) {
         rval = AddNewUser(new_users[i]);
@@ -182,7 +184,7 @@ int UserData::AddNewUser(User user) {
     }
 
     users.append(user);
-    emit userDataChanged();
+    emit userDataChanged(user.username);
 
     return 0;
 }
@@ -192,7 +194,7 @@ int UserData::DeleteUser(QString username) {
     for (i = 0; i < users.size(); i++) {
         if (users[i].username == username) {
             users.remove(i);
-            emit userDataChanged();
+            emit userDataChanged("");
             return 0;
         }
     }

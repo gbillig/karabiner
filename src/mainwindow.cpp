@@ -70,7 +70,6 @@ void MainWindow::createUi() {
     userColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
     userColumn->setModel(userColumnModel);
     userColumn->setFont(*columnFont);
-    updateUserColumn();
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
     connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updatePasswordColumn);
 
@@ -177,31 +176,28 @@ void MainWindow::createNewPassword() {
     dialog->exec();
 }
 
-void MainWindow::updateUserColumn() {
+void MainWindow::updateUserColumn(QString newUsername) {
     int i;
-
-    // find the selected row
-    int selectedRow = -1;
-    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
-    if (selectedRowIndexes.size() > 0) {
-        QModelIndex selectedRowIndex = selectedRowIndexes[0];
-        selectedRow = selectedRowIndex.row();
-    }
+    int newUsernameRow = -1;
 
     QStringList userStringList = QStringList();
     QVector<User>* users = userdata->GetUsers();
 
+    // create new string list for user column model
+    QString curUsername;
     for (i = 0; i < users->size(); i++ ) {
-        userStringList << users->value(i).username;
+        curUsername = users->value(i).username;
+        userStringList << curUsername;
+
+        // record row of new username
+        if (newUsername != "" && newUsername == curUsername) {
+            newUsernameRow = i;
+        }
     }
     userColumnModel->setStringList(userStringList);
 
-    if (selectedRow < 0) {
-        return;
-    }
-
-    QModelIndex selectedIndex = userColumnModel->index(selectedRow, 0);
-    userColumn->selectionModel()->select(selectedIndex, QItemSelectionModel::Select);
+    QModelIndex newUsernameIndex = userColumnModel->index(newUsernameRow, 0);
+    userColumn->selectionModel()->select(newUsernameIndex, QItemSelectionModel::Select);
 }
 
 void MainWindow::updatePasswordColumn() {
@@ -209,6 +205,7 @@ void MainWindow::updatePasswordColumn() {
     QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
 
     if (selectedRowIndexes.size() == 0) {
+        MainWindow::clearPasswordColumn();
         return;
     }
 
@@ -271,4 +268,9 @@ void MainWindow::updateDetailsPane() {
     username->setText(selectedPwEntry.username);
     password->setText(selectedPwEntry.password);
     notes->setText(selectedPwEntry.notes);
+}
+
+void MainWindow::clearPasswordColumn() {
+    QStringList emptyList = QStringList();
+    passwordColumnModel->setStringList(emptyList);
 }

@@ -71,7 +71,7 @@ void MainWindow::createUi() {
     userColumn->setModel(userColumnModel);
     userColumn->setFont(*columnFont);
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
-    connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updatePasswordColumn);
+    connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updatePasswordColumnTotal);
 
     // create password entry column
     QPushButton *addPassword = new QPushButton(*plus_icon, "Add password entry", this);
@@ -196,11 +196,19 @@ void MainWindow::updateUserColumn(QString newUsername) {
     }
     userColumnModel->setStringList(userStringList);
 
+    if (newUsernameRow == -1) {
+        return;
+    }
+
     QModelIndex newUsernameIndex = userColumnModel->index(newUsernameRow, 0);
     userColumn->selectionModel()->select(newUsernameIndex, QItemSelectionModel::Select);
 }
 
-void MainWindow::updatePasswordColumn() {
+void MainWindow::updatePasswordColumnTotal() {
+    updatePasswordColumn("");
+}
+
+void MainWindow::updatePasswordColumn(QString newServiceName) {
     // find the selected row
     QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
 
@@ -233,12 +241,25 @@ void MainWindow::updatePasswordColumn() {
 
     QStringList passwordStringList = QStringList();
 
-    int i;
+    int i, newServiceNameRow = -1;
+    QString curServiceName;
     for (i = 0; i < selectedUser->password_entries.length(); i++) {
-        passwordStringList.append(selectedUser->password_entries[i].service_name);
+        curServiceName = selectedUser->password_entries[i].service_name;
+        passwordStringList.append(curServiceName);
+        if (curServiceName == newServiceName) {
+            newServiceNameRow = i;
+        }
+
     }
 
     passwordColumnModel->setStringList(passwordStringList);
+
+    if (newServiceNameRow == -1) {
+        return;
+    }
+
+    QModelIndex newServiceNameIndex = passwordColumnModel->index(newServiceNameRow, 0);
+    passwordColumn->selectionModel()->select(newServiceNameIndex, QItemSelectionModel::Select);
 }
 
 void MainWindow::updateDetailsPane() {

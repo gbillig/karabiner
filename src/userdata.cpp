@@ -203,34 +203,9 @@ int UserData::DeleteUser(QString username) {
     return 1;
 }
 
-int UserData::AddNewPwEntry(PwEntry password_entry) {
-
-    MainWindow* mainWindow;
-    QWidgetList widgets = QApplication::topLevelWidgets();
-    for (QWidgetList::iterator i = widgets.begin(); i != widgets.end(); ++i) {
-        if ((*i)->objectName() == "MainWindow") {
-            mainWindow = (MainWindow*) (*i);
-            break;
-        }
-    }
-
-    if (!mainWindow) {
-        return 1;
-    }
-
-    // find which user is selected
-    QList<QModelIndex> selectedUserRowIndexes = mainWindow->userColumn->selectionModel()->selectedRows();
-    if (selectedUserRowIndexes.size() == 0) {
-        return 1;
-    }
-
-    int selectedUserRow = selectedUserRowIndexes[0].row();
-    QStringList userList = mainWindow->userColumnModel->stringList();
-    QString selectedUserString = userList[selectedUserRow];
-
-    User* selectedUser = GetUser(selectedUserString);
-    selectedUser->AddPwEntry(password_entry);
-    emit PwEntryChanged();
+int UserData::AddNewPwEntry(User* user, PwEntry password_entry) {
+    user->AddPwEntry(password_entry);
+    emit PwEntryChanged(password_entry.service_name);
 
     return 0;
 }

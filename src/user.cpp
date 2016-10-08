@@ -22,10 +22,9 @@ User::User(QString username,
 }
 
 User::User(QString username, QString password)
-    : username(username)
+    : username(username),
+      isDecrypted(false)
 {
-    isDecrypted = false;
-
     // create auth_salt and key_salt
     // generate crypto secure pseudo random number for iv
     // calculate auth_hash with auth_salt + password

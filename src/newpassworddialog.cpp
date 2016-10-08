@@ -35,6 +35,23 @@ void NewPasswordDialog::accept()
     QString notes = "notes";
 
     PwEntry *newPwEntry = new PwEntry(service_name, username, password, notes);
-    userdata->AddNewPwEntry(*newPwEntry);
+
+    MainWindow* mainWindow = (MainWindow*) this->parent();
+    if (!mainWindow) {
+        return;
+    }
+
+    // find which user is selected
+    QList<QModelIndex> selectedUserRowIndexes = mainWindow->userColumn->selectionModel()->selectedRows();
+    if (selectedUserRowIndexes.size() == 0) {
+        return;
+    }
+
+    int selectedUserRow = selectedUserRowIndexes[0].row();
+    QStringList userList = mainWindow->userColumnModel->stringList();
+    QString selectedUserString = userList[selectedUserRow];
+    User* selectedUser = userdata->GetUser(selectedUserString);
+
+    userdata->AddNewPwEntry(selectedUser, *newPwEntry);
     done(QDialog::Accepted);
 }

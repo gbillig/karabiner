@@ -44,7 +44,8 @@ private slots:
     void createNewPassword();
     void saveAs();
     void updateUserColumn(QString newUsername);
-    void updatePasswordColumn();
+    void updatePasswordColumnTotal();
+    void updatePasswordColumn(QString newServiceName);
     void updateDetailsPane();
 
 private:

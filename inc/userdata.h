@@ -21,14 +21,14 @@ public:
     int ParseUserFile(QString filepath);
     int AddNewUser(User user);
     int DeleteUser(QString username);
-    int AddNewPwEntry(PwEntry password_entry);
+    int AddNewPwEntry(User* user, PwEntry password_entry);
 
     QVector<User>* GetUsers();
     User* GetUser(QString username);
 
 signals:
     void userDataChanged(QString newUsername);
-    void PwEntryChanged();
+    void PwEntryChanged(QString newServiceName);
 
 private:
     static UserData *userdata_instance;

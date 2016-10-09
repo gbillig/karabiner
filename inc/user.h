@@ -28,11 +28,6 @@ public:
          QVector<PwEntry> password_entries);
 
     QString username;
-    QByteArray auth_salt;
-    QByteArray key_salt;
-    QByteArray iv;
-    QByteArray auth_hash;
-
     QVector<PwEntry> password_entries;
 
     bool isPristine();
@@ -40,8 +35,14 @@ public:
 
     int Authenticate(QString password, User::AuthenticateFlag auth_mode);
     int AddPwEntry(PwEntry password_entry);
+    void SerializeUser(QDataStream *stream);
 
 private:
+    QByteArray auth_salt;
+    QByteArray key_salt;
+    QByteArray iv;
+    QByteArray auth_hash;
+
     void EncryptAllPwEntries(QString password);
     void DecryptAllPwEntries(QString password);
     bool pristine;

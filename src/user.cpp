@@ -11,21 +11,21 @@ User::User(QString username,
            QByteArray auth_hash,
            QVector<PwEntry> password_entries)
     : username(username),
+      password_entries(password_entries),
       auth_salt(auth_salt),
       key_salt(key_salt),
       iv(iv),
       auth_hash(auth_hash),
-      password_entries(password_entries),
-      decrypted(false),
-      pristine(true)
+      pristine(true),
+      decrypted(false)
 {
 
 }
 
 User::User(QString username, QString password)
     : username(username),
-      decrypted(false),
-      pristine(false)
+      pristine(false),
+      decrypted(false)
 {
     // create auth_salt and key_salt
     // generate crypto secure pseudo random number for iv
@@ -102,6 +102,21 @@ void User::DecryptAllPwEntries(QString password) {
     }
 
     decrypted = true;
+}
+
+void User::SerializeUser(QDataStream* stream) {
+    *stream << username;
+    *stream << auth_salt;
+    *stream << key_salt;
+    *stream << iv;
+    *stream << auth_hash;
+
+    quint16 num_passwords = password_entries.size();
+    *stream << num_passwords;
+
+    for (int i = 0; i < num_passwords; i++) {
+        *stream << password_entries[i].encrypted_data;
+    }
 }
 
 bool User::isPristine() {

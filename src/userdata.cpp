@@ -94,32 +94,28 @@ int UserData::ParseUserFile(QString filepath)
         }
     }
 
+    file.close();
     return 0;
 }
 
 int UserData::SaveUserFile(QString filepath) {
-    QFile file(filepath);
-
-    // open file with read and write permissions
-    // truncate file (erase previous contents)
-    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
-    QDataStream file_stream(&file);    // read the data serialized from the file
+    QByteArray* serialized_userdata = new QByteArray();
+    QDataStream stream(serialized_userdata, QIODevice::WriteOnly);
 
     // write the header
     quint32 magic = 0x67EB67EB;
-    file_stream << magic;
+    stream << magic;
 
     // write the version
     quint16 version = 2;
-    file_stream << version;
+    stream << version;
 
     quint16 num_users = users.size();
     quint16 end_of_entry = 0xE0E0;
     quint16 end_of_file = 0xE0F0;
-    quint16 num_passwords;
 
-    file_stream << num_users;
-    int i, j;
+    stream << num_users;
+    int i;
     for (i = 0; i < num_users; i++) {
         if (!users[i].isPristine()) {
             bool authenticated = false;
@@ -152,23 +148,20 @@ int UserData::SaveUserFile(QString filepath) {
             }
         }
 
-        file_stream << users[i].username;
-        file_stream << users[i].auth_salt;
-        file_stream << users[i].key_salt;
-        file_stream << users[i].iv;
-        file_stream << users[i].auth_hash;
-
-        num_passwords = users[i].password_entries.size();
-        file_stream << num_passwords;
-
-        for (j = 0; j < num_passwords; j++) {
-            file_stream << users[i].password_entries[j].encrypted_data;
-        }
-
-        file_stream << end_of_entry;
+        users[i].SerializeUser(&stream);
+        stream << end_of_entry;
     }
 
-    file_stream << end_of_file;
+    stream << end_of_file;
+
+    QFile file(filepath);
+
+    // open file with read and write permissions
+    // truncate file (erase previous contents)
+    file.open(QIODevice::WriteOnly | QIODevice::Truncate);
+    QDataStream file_stream(&file);
+    file_stream.writeRawData(serialized_userdata->data(), serialized_userdata->length());
+    file.close();
 
     return 0;
 

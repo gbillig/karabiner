@@ -71,7 +71,7 @@ void MainWindow::createUi() {
     userColumn->setModel(userColumnModel);
     userColumn->setFont(*columnFont);
     connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
-    connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::updatePasswordColumnTotal);
+    connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::userSelected);
 
     // create password entry column
     QPushButton *addPassword = new QPushButton(*plus_icon, "Add password entry", this);
@@ -176,9 +176,54 @@ void MainWindow::createNewPassword() {
     dialog->exec();
 }
 
-void MainWindow::updateUserColumn(QString newUsername) {
+void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QItemSelection &deselectedUserItem) {
+    QList<QModelIndex> selectedUserIndexes = selectedUserItem.indexes();
+    QList<QModelIndex> deselectedUserIndexes = deselectedUserItem.indexes();
+
+    if (selectedUserIndexes.size() == 0) {
+        return;
+    }
+
+    int selectedRow = selectedUserIndexes[0].row();
+    QString selectedUsername = userColumnModel->stringList()[selectedRow];
+    User* selectedUser = userdata->GetUser(selectedUsername);
+
+    // authenticate user if encrypted
+    if (!selectedUser->isDecrypted) {
+        bool authenticated = 0;
+
+        while (!authenticated) {
+            bool accepted;
+            QString password = QInputDialog::getText(this, "Authentication", "Password:",
+                                                     QLineEdit::Password, "", &accepted);
+
+            // if user presses cancel on the dialog
+            if (!accepted) {
+                if (deselectedUserIndexes.size() == 0) {
+                    // clear selection if nothing was previously selected
+                    userColumn->selectionModel()->clearSelection();
+                } else {
+                    // select previously selected row
+                    userColumn->selectionModel()->clearSelection();
+                    int deselectedRow = deselectedUserIndexes[0].row();
+                    QString deselectedUsername = userColumnModel->stringList()[deselectedRow];
+                    userColumn->selectionModel()->select(deselectedUserIndexes[0], QItemSelectionModel::Select);
+                }
+
+                updatePasswordColumn("");
+                return;
+            }
+
+            authenticated = selectedUser->Authenticate(password, User::Decrypt);
+        }
+    }
+
+    updatePasswordColumn("");
+}
+
+void MainWindow::updateUserColumn(QString usernameToSelect) {
     int i;
-    int newUsernameRow = -1;
+    int usernameToSelectRow = -1;
 
     QStringList userStringList = QStringList();
     QVector<User>* users = userdata->GetUsers();
@@ -190,22 +235,18 @@ void MainWindow::updateUserColumn(QString newUsername) {
         userStringList << curUsername;
 
         // record row of new username
-        if (newUsername != "" && newUsername == curUsername) {
-            newUsernameRow = i;
+        if (usernameToSelect != "" && usernameToSelect == curUsername) {
+            usernameToSelectRow = i;
         }
     }
     userColumnModel->setStringList(userStringList);
 
-    if (newUsernameRow == -1) {
+    if (usernameToSelectRow == -1) {
         return;
     }
 
-    QModelIndex newUsernameIndex = userColumnModel->index(newUsernameRow, 0);
+    QModelIndex newUsernameIndex = userColumnModel->index(usernameToSelectRow, 0);
     userColumn->selectionModel()->select(newUsernameIndex, QItemSelectionModel::Select);
-}
-
-void MainWindow::updatePasswordColumnTotal() {
-    updatePasswordColumn("");
 }
 
 void MainWindow::updatePasswordColumn(QString newServiceName) {
@@ -213,7 +254,8 @@ void MainWindow::updatePasswordColumn(QString newServiceName) {
     QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
 
     if (selectedRowIndexes.size() == 0) {
-        MainWindow::clearPasswordColumn();
+        QStringList emptyList = QStringList();
+        passwordColumnModel->setStringList(emptyList);
         return;
     }
 
@@ -223,20 +265,7 @@ void MainWindow::updatePasswordColumn(QString newServiceName) {
     User* selectedUser = userdata->GetUser(selectedUsername);
 
     if (!selectedUser->isDecrypted) {
-        bool authenticated = 0;
-
-        while (!authenticated) {
-            bool accepted;
-            QString password = QInputDialog::getText(this, "Authentication", "Password:",
-                                                     QLineEdit::Password, "", &accepted);
-
-            if (!accepted) {
-                passwordColumnModel->setStringList(QStringList());
-                return;
-            }
-
-            authenticated = selectedUser->Authenticate(password, User::Decrypt);
-        }
+        return;
     }
 
     QStringList passwordStringList = QStringList();
@@ -289,9 +318,4 @@ void MainWindow::updateDetailsPane() {
     username->setText(selectedPwEntry.username);
     password->setText(selectedPwEntry.password);
     notes->setText(selectedPwEntry.notes);
-}
-
-void MainWindow::clearPasswordColumn() {
-    QStringList emptyList = QStringList();
-    passwordColumnModel->setStringList(emptyList);
 }

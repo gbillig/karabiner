@@ -43,8 +43,8 @@ private slots:
     void deleteUser();
     void createNewPassword();
     void saveAs();
-    void updateUserColumn(QString newUsername);
-    void updatePasswordColumnTotal();
+    void userSelected(const QItemSelection &selectedUser, const QItemSelection &deselectedUser);
+    void updateUserColumn(QString usernameToSelect);
     void updatePasswordColumn(QString newServiceName);
     void updateDetailsPane();
 
@@ -63,8 +63,6 @@ private:
     QLabel* username;
     QLabel* password;
     QLabel* notes;
-
-    void clearPasswordColumn();
 };
 
 #endif // MAINWINDOW_H

@@ -16,14 +16,16 @@ User::User(QString username,
       iv(iv),
       auth_hash(auth_hash),
       password_entries(password_entries),
-      isDecrypted(false)
+      decrypted(false),
+      pristine(true)
 {
 
 }
 
 User::User(QString username, QString password)
     : username(username),
-      isDecrypted(false)
+      decrypted(false),
+      pristine(false)
 {
     // create auth_salt and key_salt
     // generate crypto secure pseudo random number for iv
@@ -52,6 +54,7 @@ int User::AddPwEntry(PwEntry password_entry) {
     }
 
     password_entries.append(password_entry);
+    pristine = false;
     return 0;
 }
 
@@ -98,5 +101,13 @@ void User::DecryptAllPwEntries(QString password) {
         password_entries[i].DecryptEntry(key_hash, iv);
     }
 
-    isDecrypted = true;
+    decrypted = true;
+}
+
+bool User::isPristine() {
+    return pristine;
+}
+
+bool User::isDecrypted() {
+    return decrypted;
 }

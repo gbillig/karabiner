@@ -35,7 +35,8 @@ public:
 
     QVector<PwEntry> password_entries;
 
-    bool isDecrypted;
+    bool isPristine();
+    bool isDecrypted();
 
     int Authenticate(QString password, User::AuthenticateFlag auth_mode);
     int AddPwEntry(PwEntry password_entry);
@@ -43,6 +44,9 @@ public:
 private:
     void EncryptAllPwEntries(QString password);
     void DecryptAllPwEntries(QString password);
+    bool pristine;
+    bool decrypted;
+
 };
 
 #endif // USER_H

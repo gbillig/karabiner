@@ -121,35 +121,35 @@ int UserData::SaveUserFile(QString filepath) {
     file_stream << num_users;
     int i, j;
     for (i = 0; i < num_users; i++) {
+        if (!users[i].isPristine()) {
+            bool authenticated = false;
+            while (!authenticated) {
+                bool accepted;
 
-        // users[i].EncryptAllPwEntries();
-        bool authenticated = false;
-        while (!authenticated) {
-            bool accepted;
-
-            // TODO: Refactor ---
-            MainWindow* mainWindow;
-            QWidgetList widgets = QApplication::topLevelWidgets();
-            for (QWidgetList::iterator i = widgets.begin(); i != widgets.end(); ++i) {
-                if ((*i)->objectName() == "MainWindow") {
-                    mainWindow = (MainWindow*) (*i);
-                    break;
+                // TODO: Refactor ---
+                MainWindow* mainWindow;
+                QWidgetList widgets = QApplication::topLevelWidgets();
+                for (QWidgetList::iterator i = widgets.begin(); i != widgets.end(); ++i) {
+                    if ((*i)->objectName() == "MainWindow") {
+                        mainWindow = (MainWindow*) (*i);
+                        break;
+                    }
                 }
+
+                if (!mainWindow) {
+                    return 1;
+                }
+                // ------------
+
+                QString password = QInputDialog::getText(mainWindow, "Encryption", "Password for " + QString(users[i].username) + ":",
+                                                         QLineEdit::Password, "", &accepted);
+
+                if (!accepted) {
+                    return 1;
+                }
+
+                authenticated = users[i].Authenticate(password, User::Encrypt);
             }
-
-            if (!mainWindow) {
-                return 1;
-            }
-            // ------------
-
-            QString password = QInputDialog::getText(mainWindow, "Encryption", "Password for " + QString(users[i].username) + ":",
-                                                     QLineEdit::Password, "", &accepted);
-
-            if (!accepted) {
-                return 1;
-            }
-
-            authenticated = users[i].Authenticate(password, User::Encrypt);
         }
 
         file_stream << users[i].username;

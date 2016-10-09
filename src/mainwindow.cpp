@@ -189,7 +189,7 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
     User* selectedUser = userdata->GetUser(selectedUsername);
 
     // authenticate user if encrypted
-    if (!selectedUser->isDecrypted) {
+    if (!selectedUser->isDecrypted()) {
         bool authenticated = 0;
 
         while (!authenticated) {
@@ -264,7 +264,7 @@ void MainWindow::updatePasswordColumn(QString newServiceName) {
 
     User* selectedUser = userdata->GetUser(selectedUsername);
 
-    if (!selectedUser->isDecrypted) {
+    if (!selectedUser->isDecrypted()) {
         return;
     }
 

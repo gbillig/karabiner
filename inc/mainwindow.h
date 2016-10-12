@@ -45,10 +45,11 @@ private slots:
 
     void addUserEntry(QString usernameToAdd);
     void removeSelectedUserEntry();
-    void userSelected(const QItemSelection &selectedUser, const QItemSelection &deselectedUser);
+    void userSelected(const QItemSelection &selectedUserItem, const QItemSelection &deselectedUserItem);
 
     void addPasswordEntry(QString usernameToAdd);
     void removeSelectedPasswordEntry();
+    void passwordEntrySelected(const QItemSelection &selectedPasswordItem, const QItemSelection &deselectedPasswordItem);
     void refreshPasswordEntries();
 
     void refreshDetailsPane();
@@ -64,6 +65,9 @@ private:
 
     QListView* passwordColumn;
     QStringListModel* passwordColumnModel;
+
+    QPushButton* removeUser;
+    QPushButton* removePassword;
 
     QLabel* serviceName;
     QLabel* username;

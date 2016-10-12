@@ -59,7 +59,7 @@ void MainWindow::createUi() {
     // create column with list of users
     QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
     connect(addUser, &QPushButton::clicked, this, &MainWindow::createNewUser);
-    QPushButton *removeUser = new QPushButton(*minus_icon, "Remove user", this);
+    removeUser = new QPushButton(*minus_icon, "Remove user", this);
     connect(removeUser, &QPushButton::clicked, this, &MainWindow::removeSelectedUserEntry);
     removeUser->setEnabled(false);
 
@@ -77,7 +77,7 @@ void MainWindow::createUi() {
     // create password entry column
     QPushButton *addPassword = new QPushButton(*plus_icon, "Add password entry", this);
     connect(addPassword, &QPushButton::clicked, this, &MainWindow::createNewPassword);
-    QPushButton *removePassword = new QPushButton(*minus_icon, "Remove password entry", this);
+    removePassword = new QPushButton(*minus_icon, "Remove password entry", this);
     connect(removePassword, &QPushButton::clicked, this, &MainWindow::removeSelectedPasswordEntry);
     removePassword->setEnabled(false);
 
@@ -94,7 +94,7 @@ void MainWindow::createUi() {
     username = new QLabel;
     password = new QLabel;
     notes = new QLabel;
-    connect(passwordColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::refreshDetailsPane);
+    connect(passwordColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::passwordEntrySelected);
 
     QGridLayout* userColumnLayout = new QGridLayout;
     userColumnLayout->addWidget(addUser, 0, 0);
@@ -175,11 +175,13 @@ void MainWindow::addUserEntry(QString usernameToAdd) {
 void MainWindow::removeSelectedUserEntry() {
     QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
     QModelIndex selectedRowModelIndex = selectedRowIndexes.first();
+
+    QString usernameString = selectedRowModelIndex.data().toString();
+    userdata->DeleteUser(usernameString);
+
     int selectedRow = selectedRowModelIndex.row();
     userColumnModel->removeRow(selectedRow);
     userColumn->selectionModel()->clear();
-
-    userdata->DeleteUser(selectedRowModelIndex.data().toString());
 }
 
 void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QItemSelection &deselectedUserItem) {
@@ -187,8 +189,11 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
     QList<QModelIndex> deselectedUserIndexes = deselectedUserItem.indexes();
 
     if (selectedUserIndexes.size() == 0) {
+        removeUser->setEnabled(false);
         return;
     }
+
+    removeUser->setEnabled(true);
 
     int selectedRow = selectedUserIndexes[0].row();
     QString selectedUsername = userColumnModel->stringList()[selectedRow];
@@ -210,10 +215,7 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
                     userColumn->selectionModel()->clearSelection();
                 } else {
                     // select previously selected row
-                    userColumn->selectionModel()->clearSelection();
-                    int deselectedRow = deselectedUserIndexes[0].row();
-                    QString deselectedUsername = userColumnModel->stringList()[deselectedRow];
-                    userColumn->selectionModel()->select(deselectedUserIndexes[0], QItemSelectionModel::Select);
+                    userColumn->selectionModel()->select(deselectedUserIndexes[0], QItemSelectionModel::ClearAndSelect);
                 }
 
                 return;
@@ -237,11 +239,26 @@ void MainWindow::addPasswordEntry(QString newServiceName) {
 void MainWindow::removeSelectedPasswordEntry() {
     QList<QModelIndex> selectedRowIndexes = passwordColumn->selectionModel()->selectedRows();
     QModelIndex selectedRowModelIndex = selectedRowIndexes.first();
+
+    QString serviceName = selectedRowModelIndex.data().toString();
+    userdata->DeleteUser(serviceName);
+
     int selectedRow = selectedRowModelIndex.row();
     passwordColumnModel->removeRow(selectedRow);
     passwordColumn->selectionModel()->clear();
+}
 
-    userdata->DeleteUser(selectedRowModelIndex.data().toString());
+void MainWindow::passwordEntrySelected(const QItemSelection &selectedPasswordItem, const QItemSelection &deselectedPasswordItem) {
+    QList<QModelIndex> selectedPasswordIndexes = selectedPasswordItem.indexes();
+    QList<QModelIndex> deselectedPasswordIndexes = deselectedPasswordItem.indexes();
+
+    if (selectedPasswordIndexes.length() != 0) {
+        removePassword->setEnabled(true);
+    } else {
+        removePassword->setEnabled(false);
+    }
+
+    refreshDetailsPane();
 }
 
 void MainWindow::refreshPasswordEntries() {

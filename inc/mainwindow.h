@@ -40,10 +40,11 @@ public slots:
 private slots:
     void open();
     void createNewUser();
-    void deleteUser();
     void createNewPassword();
     void saveAs();
     void userSelected(const QItemSelection &selectedUser, const QItemSelection &deselectedUser);
+    void addUserEntry(QString usernameToAdd);
+    void removeSelectedUserEntry();
     void updateUserColumn(QString usernameToSelect);
     void updatePasswordColumn(QString newServiceName);
     void updateDetailsPane();

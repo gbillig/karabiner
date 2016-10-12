@@ -60,7 +60,7 @@ void MainWindow::createUi() {
     QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
     connect(addUser, &QPushButton::clicked, this, &MainWindow::createNewUser);
     QPushButton *removeUser = new QPushButton(*minus_icon, "Remove user", this);
-    connect(removeUser, &QPushButton::clicked, this, &MainWindow::deleteUser);
+    connect(removeUser, &QPushButton::clicked, this, &MainWindow::removeSelectedUserEntry);
 
     userColumn = new QListView;
     userColumnModel = new QStringListModel;
@@ -70,7 +70,7 @@ void MainWindow::createUi() {
     userColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
     userColumn->setModel(userColumnModel);
     userColumn->setFont(*columnFont);
-    connect(userdata, &UserData::userDataChanged, this, &MainWindow::updateUserColumn);
+    connect(userdata, &UserData::userAdded, this, &MainWindow::addUserEntry);
     connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::userSelected);
 
     // create password entry column
@@ -151,24 +151,9 @@ void MainWindow::saveAs() {
     }
 }
 
-
-
 void MainWindow::createNewUser() {
     NewUserDialog *dialog = new NewUserDialog(this);
     dialog->exec();
-}
-
-void MainWindow::deleteUser() {
-    // find the selected user
-    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
-
-    if (selectedRowIndexes.size() == 0) {
-        return;
-    }
-
-    int selectedRow = selectedRowIndexes[0].row();
-    QString selectedUsername = userColumnModel->stringList()[selectedRow];
-    userdata->DeleteUser(selectedUsername);
 }
 
 void MainWindow::createNewPassword() {
@@ -219,6 +204,25 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
     }
 
     updatePasswordColumn("");
+}
+
+
+void MainWindow::addUserEntry(QString usernameToAdd) {
+    int lastRow = userColumnModel->rowCount();
+    userColumnModel->insertRow(lastRow);
+    QModelIndex lastRowModelIndex = userColumnModel->index(lastRow);
+    userColumnModel->setData(lastRowModelIndex, usernameToAdd, Qt::DisplayRole);
+    userColumn->selectionModel()->select(lastRowModelIndex, QItemSelectionModel::ClearAndSelect);
+}
+
+void MainWindow::removeSelectedUserEntry() {
+    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
+    QModelIndex selectedRowModelIndex = selectedRowIndexes.first();
+    int selectedRow = selectedRowModelIndex.row();
+    userColumnModel->removeRow(selectedRow);
+    userColumn->selectionModel()->clear();
+
+    userdata->DeleteUser(selectedRowModelIndex.data().toString());
 }
 
 void MainWindow::updateUserColumn(QString usernameToSelect) {

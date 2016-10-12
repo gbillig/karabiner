@@ -177,7 +177,7 @@ int UserData::AddNewUser(User user) {
     }
 
     users.append(user);
-    emit userDataChanged(user.username);
+    emit userAdded(user.username);
 
     return 0;
 }

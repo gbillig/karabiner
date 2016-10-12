@@ -29,6 +29,7 @@ public:
 signals:
     void userDataChanged(QString newUsername);
     void PwEntryChanged(QString newServiceName);
+    void userAdded(QString newUsername);
 
 private:
     static UserData *userdata_instance;

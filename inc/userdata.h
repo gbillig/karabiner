@@ -27,9 +27,8 @@ public:
     User* GetUser(QString username);
 
 signals:
-    void userDataChanged(QString newUsername);
-    void PwEntryChanged(QString newServiceName);
     void userAdded(QString newUsername);
+    void passwordEntryAdded(QString newServiceName);
 
 private:
     static UserData *userdata_instance;

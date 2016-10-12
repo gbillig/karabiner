@@ -42,12 +42,17 @@ private slots:
     void createNewUser();
     void createNewPassword();
     void saveAs();
-    void userSelected(const QItemSelection &selectedUser, const QItemSelection &deselectedUser);
+
     void addUserEntry(QString usernameToAdd);
     void removeSelectedUserEntry();
-    void updateUserColumn(QString usernameToSelect);
-    void updatePasswordColumn(QString newServiceName);
-    void updateDetailsPane();
+    void userSelected(const QItemSelection &selectedUser, const QItemSelection &deselectedUser);
+
+    void addPasswordEntry(QString usernameToAdd);
+    void removeSelectedPasswordEntry();
+    void refreshPasswordEntries();
+
+    void refreshDetailsPane();
+    void clearDetailsPane();
 
 private:
     Ui::MainWindow* ui;

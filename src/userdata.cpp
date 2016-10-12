@@ -187,7 +187,6 @@ int UserData::DeleteUser(QString username) {
     for (i = 0; i < users.size(); i++) {
         if (users[i].username == username) {
             users.remove(i);
-            emit userDataChanged("");
             return 0;
         }
     }
@@ -198,7 +197,7 @@ int UserData::DeleteUser(QString username) {
 
 int UserData::AddNewPwEntry(User* user, PwEntry password_entry) {
     user->AddPwEntry(password_entry);
-    emit PwEntryChanged(password_entry.service_name);
+    emit passwordEntryAdded(password_entry.service_name);
 
     return 0;
 }

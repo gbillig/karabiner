@@ -134,6 +134,10 @@ void MainWindow::open() {
     int rval;
     QString filePath = QFileDialog::getOpenFileName(this);
     if (!filePath.isEmpty()) {
+        // remove all current user rows
+        int numUserRows = userColumnModel->rowCount();
+        userColumnModel->removeRows(0, numUserRows);
+
         rval = userdata->ParseUserFile(filePath);
         if (rval != 0) {
             QMessageBox *invalidFileMsgBox = new QMessageBox(this);
@@ -190,6 +194,7 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
 
     if (selectedUserIndexes.size() == 0) {
         removeUser->setEnabled(false);
+        refreshPasswordEntries();
         return;
     }
 

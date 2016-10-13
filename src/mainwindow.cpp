@@ -57,11 +57,11 @@ void MainWindow::createUi() {
     mainLayout = new QGridLayout;
 
     // create column with list of users
-    QPushButton *addUser = new QPushButton(*plus_icon, "Add user", this);
+    addUser = new QPushButton(*plus_icon, "Add user", this);
     connect(addUser, &QPushButton::clicked, this, &MainWindow::createNewUser);
     removeUser = new QPushButton(*minus_icon, "Remove user", this);
-    connect(removeUser, &QPushButton::clicked, this, &MainWindow::removeSelectedUserEntry);
     removeUser->setEnabled(false);
+    connect(removeUser, &QPushButton::clicked, this, &MainWindow::removeSelectedUserEntry);
 
     userColumn = new QListView;
     userColumnModel = new QStringListModel;
@@ -75,11 +75,12 @@ void MainWindow::createUi() {
     connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::userSelected);
 
     // create password entry column
-    QPushButton *addPassword = new QPushButton(*plus_icon, "Add password entry", this);
+    addPassword = new QPushButton(*plus_icon, "Add password entry", this);
+    addPassword->setEnabled(false);
     connect(addPassword, &QPushButton::clicked, this, &MainWindow::createNewPassword);
     removePassword = new QPushButton(*minus_icon, "Remove password entry", this);
-    connect(removePassword, &QPushButton::clicked, this, &MainWindow::removeSelectedPasswordEntry);
     removePassword->setEnabled(false);
+    connect(removePassword, &QPushButton::clicked, this, &MainWindow::removeSelectedPasswordEntry);
 
     passwordColumn = new QListView;
     passwordColumnModel= new QStringListModel;
@@ -194,11 +195,13 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
 
     if (selectedUserIndexes.size() == 0) {
         removeUser->setEnabled(false);
+        addPassword->setEnabled(false);
         refreshPasswordEntries();
         return;
     }
 
     removeUser->setEnabled(true);
+    addPassword->setEnabled(true);
 
     int selectedRow = selectedUserIndexes[0].row();
     QString selectedUsername = userColumnModel->stringList()[selectedRow];
@@ -227,6 +230,7 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
             }
 
             authenticated = selectedUser->Authenticate(password, User::Decrypt);
+            //TODO: Add small delay between authentication attempts
         }
     }
 

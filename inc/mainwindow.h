@@ -66,7 +66,9 @@ private:
     QListView* passwordColumn;
     QStringListModel* passwordColumnModel;
 
+    QPushButton* addUser;
     QPushButton* removeUser;
+    QPushButton* addPassword;
     QPushButton* removePassword;
 
     QLabel* serviceName;

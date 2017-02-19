@@ -41,17 +41,17 @@ void NewPasswordDialog::accept()
         return;
     }
 
-    // find which user is selected
-    QList<QModelIndex> selectedUserRowIndexes = mainWindow->userColumn->selectionModel()->selectedRows();
-    if (selectedUserRowIndexes.size() == 0) {
+    // find which category is selected
+    QList<QModelIndex> selectedCategoryRowIndexes = mainWindow->categoryColumn->selectionModel()->selectedRows();
+    if (selectedCategoryRowIndexes.size() == 0) {
         return;
     }
 
-    int selectedUserRow = selectedUserRowIndexes[0].row();
-    QStringList userList = mainWindow->userColumnModel->stringList();
-    QString selectedUserString = userList[selectedUserRow];
-    User* selectedUser = userdata->GetUser(selectedUserString);
+    int selectedCategoryRow = selectedCategoryRowIndexes[0].row();
+    QStringList categoryList = mainWindow->categoryColumnModel->stringList();
+    QString selectedCategoryString = categoryList[selectedCategoryRow];
+    Category* selectedCategory = userdata->GetCategory(selectedCategoryString);
 
-    userdata->AddNewPwEntry(selectedUser, *newPwEntry);
+    userdata->AddNewPwEntry(selectedCategory, *newPwEntry);
     done(QDialog::Accepted);
 }

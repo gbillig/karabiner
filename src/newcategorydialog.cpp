@@ -1,17 +1,17 @@
-#include "../inc/newuserdialog.h"
+#include "../inc/newcategorydialog.h"
 
 
-NewUserDialog::NewUserDialog(QWidget *parent)
+NewCategoryDialog::NewCategoryDialog(QWidget *parent)
       : QDialog(parent),
         userdata(UserData::GetInstance())
 {
-    usernameEdit = new QLineEdit;
+    categoryEdit = new QLineEdit;
     passwordEdit = new QLineEdit;
     passwordConfirmEdit = new QLineEdit;
 
 
     QFormLayout *accountFormLayout = new QFormLayout;
-    accountFormLayout->addRow(tr("&Username:"), usernameEdit);
+    accountFormLayout->addRow(tr("&Category:"), categoryEdit);
     accountFormLayout->addRow(tr("&Password:"), passwordEdit);
     accountFormLayout->addRow(tr("&Confirm Password:"), passwordConfirmEdit);
 
@@ -40,7 +40,7 @@ NewUserDialog::NewUserDialog(QWidget *parent)
                                    | QDialogButtonBox::Cancel,
                                      Qt::Horizontal);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &NewUserDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &NewCategoryDialog::accept);
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     QVBoxLayout *cryptoBoxLayout = new QVBoxLayout;
@@ -61,15 +61,15 @@ NewUserDialog::NewUserDialog(QWidget *parent)
     mainLayout->addWidget(hashBox, 1, 1);
     mainLayout->addWidget(buttonBox, 2, 0, 1, -1);
     setLayout(mainLayout);
-    setWindowTitle(tr("Add user"));
+    setWindowTitle(tr("Add category"));
 }
 
-void NewUserDialog::accept() {
+void NewCategoryDialog::accept() {
 
-    QString username = usernameEdit->text();
+    QString category = categoryEdit->text();
     QString password = passwordEdit->text();
 
-    if (username == "") {
+    if (category == "") {
         // password field is emtpy
         return;
     }
@@ -84,7 +84,7 @@ void NewUserDialog::accept() {
         return;
     }
 
-    User *newUser = new User(username, password);
-    userdata->AddNewUser(*newUser);
+    Category *newCategory = new Category(category, password);
+    userdata->AddNewCategory(*newCategory);
     done(QDialog::Accepted);
 }

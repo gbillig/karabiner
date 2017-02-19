@@ -4,7 +4,7 @@
 
 UserData::UserData()
 {
-    //users = new QVector<User>;
+    //categories = new QVector<Category>;
 }
 
 UserData* UserData::userdata_instance = 0;
@@ -40,18 +40,18 @@ int UserData::ParseUserFile(QString filepath)
         return 1;
     }
 
-    quint16 num_users, end_of_entry, end_of_file, num_passwords;
-    QString username;
+    quint16 num_categories, end_of_entry, end_of_file, num_passwords;
+    QString category_name;
     QByteArray auth_salt, key_salt, iv, auth_hash, encrypted_data;
 
-    file_stream >> num_users;
+    file_stream >> num_categories;
 
-    QVector<User> new_users;
+    QVector<Category> new_category;
     QVector<PwEntry> password_entries;
 
     int i, j, rval;
-    for (i = 0; i < num_users; i++) {
-        file_stream >> username;
+    for (i = 0; i < num_categories; i++) {
+        file_stream >> category_name;
         file_stream >> auth_salt;
         file_stream >> key_salt;
         file_stream >> iv;
@@ -73,8 +73,8 @@ int UserData::ParseUserFile(QString filepath)
             return 1;
         }
 
-        User *user = new User(username, auth_salt, key_salt, iv, auth_hash, password_entries);
-        new_users.append(*user);
+        Category *category = new Category(category_name, auth_salt, key_salt, iv, auth_hash, password_entries);
+        new_category.append(*category);
     }
 
     file_stream >> end_of_file;
@@ -83,13 +83,13 @@ int UserData::ParseUserFile(QString filepath)
         return 1;
     }
 
-    users.clear();
+    categories.clear();
 
-    // add parsed users to userdata
-    for (i = 0; i < new_users.length(); i++) {
-        rval = AddNewUser(new_users[i]);
+    // add parsed categories to userdata
+    for (i = 0; i < new_category.length(); i++) {
+        rval = AddNewCategory(new_category[i]);
         if (rval != 0) {
-            // unable to add new user to userdata
+            // unable to add new category to userdata
             return 1;
         }
     }
@@ -110,14 +110,14 @@ int UserData::SaveUserFile(QString filepath) {
     quint16 version = 2;
     stream << version;
 
-    quint16 num_users = users.size();
+    quint16 num_categories = categories.size();
     quint16 end_of_entry = 0xE0E0;
     quint16 end_of_file = 0xE0F0;
 
-    stream << num_users;
+    stream << num_categories;
     int i;
-    for (i = 0; i < num_users; i++) {
-        if (!users[i].isPristine()) {
+    for (i = 0; i < num_categories; i++) {
+        if (!categories[i].isPristine()) {
             bool authenticated = false;
             while (!authenticated) {
                 bool accepted;
@@ -137,18 +137,18 @@ int UserData::SaveUserFile(QString filepath) {
                 }
                 // ------------
 
-                QString password = QInputDialog::getText(mainWindow, "Encryption", "Password for " + QString(users[i].username) + ":",
+                QString password = QInputDialog::getText(mainWindow, "Encryption", "Password for " + QString(categories[i].category) + ":",
                                                          QLineEdit::Password, "", &accepted);
 
                 if (!accepted) {
                     return 1;
                 }
 
-                authenticated = users[i].Authenticate(password, User::Encrypt);
+                authenticated = categories[i].Authenticate(password, Category::Encrypt);
             }
         }
 
-        users[i].SerializeUser(&stream);
+        categories[i].SerializeCategory(&stream);
         stream << end_of_entry;
     }
 
@@ -167,50 +167,50 @@ int UserData::SaveUserFile(QString filepath) {
 
 }
 
-int UserData::AddNewUser(User user) {
+int UserData::AddNewCategory(Category category) {
     int i;
-    for (i = 0; i < users.size(); i++) {
-        if (users[i].username == user.username) {
-            // user with this username already exists!
+    for (i = 0; i < categories.size(); i++) {
+        if (categories[i].category == category.category) {
+            // category with this category name already exists!
             return 1;
         }
     }
 
-    users.append(user);
-    emit userAdded(user.username);
+    categories.append(category);
+    emit categoryAdded(category.category);
 
     return 0;
 }
 
-int UserData::DeleteUser(QString username) {
+int UserData::DeleteCategory(QString category) {
     int i;
-    for (i = 0; i < users.size(); i++) {
-        if (users[i].username == username) {
-            users.remove(i);
+    for (i = 0; i < categories.size(); i++) {
+        if (categories[i].category == category) {
+            categories.remove(i);
             return 0;
         }
     }
 
-    // user not found
+    // category not found
     return 1;
 }
 
-int UserData::AddNewPwEntry(User* user, PwEntry password_entry) {
-    user->AddPwEntry(password_entry);
+int UserData::AddNewPwEntry(Category* category, PwEntry password_entry) {
+    category->AddPwEntry(password_entry);
     emit passwordEntryAdded(password_entry.service_name);
 
     return 0;
 }
 
-QVector<User>* UserData::GetUsers() {
-    return &users;
+QVector<Category>* UserData::GetCategory() {
+    return &categories;
 }
 
-User* UserData::GetUser(QString username) {
+Category* UserData::GetCategory(QString category) {
     int i;
-    for (i = 0; i < users.size(); i++) {
-        if (users[i].username == username) {
-            return &users[i];
+    for (i = 0; i < categories.size(); i++) {
+        if (categories[i].category == category) {
+            return &categories[i];
         }
     }
 

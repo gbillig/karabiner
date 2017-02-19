@@ -2,7 +2,7 @@
 #define USERDATA_H
 
 
-#include "user.h"
+#include "category.h"
 #include <QFile>
 #include <QDataStream>
 #include <QVector>
@@ -19,20 +19,20 @@ public:
 
     int SaveUserFile(QString filepath);
     int ParseUserFile(QString filepath);
-    int AddNewUser(User user);
-    int DeleteUser(QString username);
-    int AddNewPwEntry(User* user, PwEntry password_entry);
+    int AddNewCategory(Category category);
+    int DeleteCategory(QString category);
+    int AddNewPwEntry(Category* category, PwEntry password_entry);
 
-    QVector<User>* GetUsers();
-    User* GetUser(QString username);
+    QVector<Category>* GetCategory();
+    Category* GetCategory(QString category);
 
 signals:
-    void userAdded(QString newUsername);
+    void categoryAdded(QString newCategory);
     void passwordEntryAdded(QString newServiceName);
 
 private:
     static UserData *userdata_instance;
-    QVector<User> users;
+    QVector<Category> categories;
 };
 
 #endif // USERDATA_H

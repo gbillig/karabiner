@@ -1,5 +1,5 @@
-#ifndef USER_H
-#define USER_H
+#ifndef CATEGORY_H
+#define CATEGORY_H
 
 #include <stdint.h>
 #include <QString>
@@ -7,7 +7,7 @@
 #include <QVector>
 #include "../inc/pwentry.h"
 
-class User
+class Category
 {
 
 public:
@@ -17,25 +17,25 @@ public:
         Decrypt = 0x0002
     };
 
-    User();
-    User(QString username,
+    Category();
+    Category(QString category,
          QString password);
-    User(QString username,
+    Category(QString category,
          QByteArray auth_salt,
          QByteArray key_salt,
          QByteArray iv,
          QByteArray auth_hash,
          QVector<PwEntry> password_entries);
 
-    QString username;
+    QString category;
     QVector<PwEntry> password_entries;
 
     bool isPristine();
     bool isDecrypted();
 
-    int Authenticate(QString password, User::AuthenticateFlag auth_mode);
+    int Authenticate(QString password, Category::AuthenticateFlag auth_mode);
     int AddPwEntry(PwEntry password_entry);
-    void SerializeUser(QDataStream *stream);
+    void SerializeCategory(QDataStream *stream);
 
 private:
     QByteArray auth_salt;
@@ -50,4 +50,4 @@ private:
 
 };
 
-#endif // USER_H
+#endif // CATEGORY_H

@@ -15,10 +15,10 @@
 #include <QFont>
 
 #include "../inc/userdata.h"
-#include "../inc/newuserdialog.h"
+#include "../inc/newcategorydialog.h"
 #include "../inc/newpassworddialog.h"
 #include "../build/ui_mainwindow.h"
-#include "../inc/user.h"
+#include "../inc/category.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,22 +32,22 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    QListView* userColumn;
-    QStringListModel* userColumnModel;
+    QListView* categoryColumn;
+    QStringListModel* categoryColumnModel;
 
 public slots:
 
 private slots:
     void open();
-    void createNewUser();
+    void createNewCategory();
     void createNewPassword();
     void saveAs();
 
-    void addUserEntry(QString usernameToAdd);
-    void removeSelectedUserEntry();
-    void userSelected(const QItemSelection &selectedUserItem, const QItemSelection &deselectedUserItem);
+    void addCategoryEntry(QString categoryToAdd);
+    void removeSelectedCategoryEntry();
+    void categorySelected(const QItemSelection &selectedCategoryItem, const QItemSelection &deselectedCategoryItem);
 
-    void addPasswordEntry(QString usernameToAdd);
+    void addPasswordEntry(QString newServiceName);
     void removeSelectedPasswordEntry();
     void passwordEntrySelected(const QItemSelection &selectedPasswordItem, const QItemSelection &deselectedPasswordItem);
     void refreshPasswordEntries();
@@ -66,8 +66,8 @@ private:
     QListView* passwordColumn;
     QStringListModel* passwordColumnModel;
 
-    QPushButton* addUser;
-    QPushButton* removeUser;
+    QPushButton* addCategory;
+    QPushButton* removeCategory;
     QPushButton* addPassword;
     QPushButton* removePassword;
 

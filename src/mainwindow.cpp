@@ -29,7 +29,7 @@ void MainWindow::createUi() {
     const QPixmap *new_pixmap = new QPixmap(":/res/create_new-48.png");
     QIcon *new_icon = new QIcon(*new_pixmap);
     QAction *newDocument = new QAction(*new_icon, "New document", this);
-    connect(newDocument, &QAction::triggered, this, &MainWindow::createNewUser);
+    connect(newDocument, &QAction::triggered, this, &MainWindow::createNewCategory);
 
     const QPixmap *open_pixmap = new QPixmap(":/res/opened_folder-48.png");
     QIcon *open_icon = new QIcon(*open_pixmap);
@@ -56,23 +56,23 @@ void MainWindow::createUi() {
     // create mainwindow layout
     mainLayout = new QGridLayout;
 
-    // create column with list of users
-    addUser = new QPushButton(*plus_icon, "Add user", this);
-    connect(addUser, &QPushButton::clicked, this, &MainWindow::createNewUser);
-    removeUser = new QPushButton(*minus_icon, "Remove user", this);
-    removeUser->setEnabled(false);
-    connect(removeUser, &QPushButton::clicked, this, &MainWindow::removeSelectedUserEntry);
+    // create column with list of categories
+    addCategory = new QPushButton(*plus_icon, "Add category", this);
+    connect(addCategory, &QPushButton::clicked, this, &MainWindow::createNewCategory);
+    removeCategory = new QPushButton(*minus_icon, "Remove category", this);
+    removeCategory->setEnabled(false);
+    connect(removeCategory, &QPushButton::clicked, this, &MainWindow::removeSelectedCategoryEntry);
 
-    userColumn = new QListView;
-    userColumnModel = new QStringListModel;
+    categoryColumn = new QListView;
+    categoryColumnModel = new QStringListModel;
     QFont* columnFont = new QFont;
     columnFont->setPointSize(14);
 
-    userColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    userColumn->setModel(userColumnModel);
-    userColumn->setFont(*columnFont);
-    connect(userdata, &UserData::userAdded, this, &MainWindow::addUserEntry);
-    connect(userColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::userSelected);
+    categoryColumn->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    categoryColumn->setModel(categoryColumnModel);
+    categoryColumn->setFont(*columnFont);
+    connect(userdata, &UserData::categoryAdded, this, &MainWindow::addCategoryEntry);
+    connect(categoryColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::categorySelected);
 
     // create password entry column
     addPassword = new QPushButton(*plus_icon, "Add password entry", this);
@@ -97,10 +97,10 @@ void MainWindow::createUi() {
     notes = new QLabel;
     connect(passwordColumn->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::passwordEntrySelected);
 
-    QGridLayout* userColumnLayout = new QGridLayout;
-    userColumnLayout->addWidget(addUser, 0, 0);
-    userColumnLayout->addWidget(removeUser, 0, 1);
-    userColumnLayout->addWidget(userColumn, 1, 0, 1, 0);
+    QGridLayout* categoryColumnLayout = new QGridLayout;
+    categoryColumnLayout->addWidget(addCategory, 0, 0);
+    categoryColumnLayout->addWidget(removeCategory, 0, 1);
+    categoryColumnLayout->addWidget(categoryColumn, 1, 0, 1, 0);
 
     QGridLayout* passwordColumnLayout = new QGridLayout;
     passwordColumnLayout->addWidget(addPassword, 0, 0);
@@ -113,17 +113,17 @@ void MainWindow::createUi() {
     detailsLayout->addRow(tr("Password:"), password);
     detailsLayout->addRow(tr("Notes:"), notes);
 
-    QWidget* userSection = new QWidget;
-    userSection->setLayout(userColumnLayout);
+    QWidget* categorySection = new QWidget;
+    categorySection->setLayout(categoryColumnLayout);
     QWidget* passwordSection = new QWidget;
     passwordSection->setLayout(passwordColumnLayout);
     QWidget* detailsSection = new QWidget;
     detailsSection->setLayout(detailsLayout);
-    int buttonHeight = addUser->height();
+    int buttonHeight = addCategory->height();
     detailsSection->setContentsMargins(0, buttonHeight + 4, 0, 0);
 
     QSplitter* mainSplitter = new QSplitter;
-    mainSplitter->addWidget(userSection);
+    mainSplitter->addWidget(categorySection);
     mainSplitter->addWidget(passwordSection);
     mainSplitter->addWidget(detailsSection);
 
@@ -135,9 +135,9 @@ void MainWindow::open() {
     int rval;
     QString filePath = QFileDialog::getOpenFileName(this);
     if (!filePath.isEmpty()) {
-        // remove all current user rows
-        int numUserRows = userColumnModel->rowCount();
-        userColumnModel->removeRows(0, numUserRows);
+        // remove all current category rows
+        int numCategoryRows = categoryColumnModel->rowCount();
+        categoryColumnModel->removeRows(0, numCategoryRows);
 
         rval = userdata->ParseUserFile(filePath);
         if (rval != 0) {
@@ -159,8 +159,8 @@ void MainWindow::saveAs() {
     }
 }
 
-void MainWindow::createNewUser() {
-    NewUserDialog *dialog = new NewUserDialog(this);
+void MainWindow::createNewCategory() {
+    NewCategoryDialog *dialog = new NewCategoryDialog(this);
     dialog->exec();
 }
 
@@ -169,46 +169,46 @@ void MainWindow::createNewPassword() {
     dialog->exec();
 }
 
-void MainWindow::addUserEntry(QString usernameToAdd) {
-    int lastRow = userColumnModel->rowCount();
-    userColumnModel->insertRow(lastRow);
-    QModelIndex lastRowModelIndex = userColumnModel->index(lastRow);
-    userColumnModel->setData(lastRowModelIndex, usernameToAdd, Qt::DisplayRole);
-    userColumn->selectionModel()->select(lastRowModelIndex, QItemSelectionModel::ClearAndSelect);
+void MainWindow::addCategoryEntry(QString categoryToAdd) {
+    int lastRow = categoryColumnModel->rowCount();
+    categoryColumnModel->insertRow(lastRow);
+    QModelIndex lastRowModelIndex = categoryColumnModel->index(lastRow);
+    categoryColumnModel->setData(lastRowModelIndex, categoryToAdd, Qt::DisplayRole);
+    categoryColumn->selectionModel()->select(lastRowModelIndex, QItemSelectionModel::ClearAndSelect);
 }
 
-void MainWindow::removeSelectedUserEntry() {
-    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
+void MainWindow::removeSelectedCategoryEntry() {
+    QList<QModelIndex> selectedRowIndexes = categoryColumn->selectionModel()->selectedRows();
     QModelIndex selectedRowModelIndex = selectedRowIndexes.first();
 
-    QString usernameString = selectedRowModelIndex.data().toString();
-    userdata->DeleteUser(usernameString);
+    QString categoryString = selectedRowModelIndex.data().toString();
+    userdata->DeleteCategory(categoryString);
 
     int selectedRow = selectedRowModelIndex.row();
-    userColumnModel->removeRow(selectedRow);
-    userColumn->selectionModel()->clear();
+    categoryColumnModel->removeRow(selectedRow);
+    categoryColumn->selectionModel()->clear();
 }
 
-void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QItemSelection &deselectedUserItem) {
-    QList<QModelIndex> selectedUserIndexes = selectedUserItem.indexes();
-    QList<QModelIndex> deselectedUserIndexes = deselectedUserItem.indexes();
+void MainWindow::categorySelected(const QItemSelection &selectedCategoryItem, const QItemSelection &deselectedCategoryItem) {
+    QList<QModelIndex> selectedCategoryIndexes = selectedCategoryItem.indexes();
+    QList<QModelIndex> deselectedCategoryIndexes = deselectedCategoryItem.indexes();
 
-    if (selectedUserIndexes.size() == 0) {
-        removeUser->setEnabled(false);
+    if (selectedCategoryIndexes.size() == 0) {
+        removeCategory->setEnabled(false);
         addPassword->setEnabled(false);
         refreshPasswordEntries();
         return;
     }
 
-    removeUser->setEnabled(true);
+    removeCategory->setEnabled(true);
     addPassword->setEnabled(true);
 
-    int selectedRow = selectedUserIndexes[0].row();
-    QString selectedUsername = userColumnModel->stringList()[selectedRow];
-    User* selectedUser = userdata->GetUser(selectedUsername);
+    int selectedRow = selectedCategoryIndexes[0].row();
+    QString selectedCategoryName = categoryColumnModel->stringList()[selectedRow];
+    Category* selectedCategory = userdata->GetCategory(selectedCategoryName);
 
-    // authenticate user if encrypted
-    if (!selectedUser->isDecrypted()) {
+    // authenticate category if encrypted
+    if (!selectedCategory->isDecrypted()) {
         bool authenticated = 0;
 
         while (!authenticated) {
@@ -218,18 +218,18 @@ void MainWindow::userSelected(const QItemSelection &selectedUserItem, const QIte
 
             // if user presses cancel on the dialog
             if (!accepted) {
-                if (deselectedUserIndexes.size() == 0) {
+                if (deselectedCategoryIndexes.size() == 0) {
                     // clear selection if nothing was previously selected
-                    userColumn->selectionModel()->clearSelection();
+                    categoryColumn->selectionModel()->clearSelection();
                 } else {
                     // select previously selected row
-                    userColumn->selectionModel()->select(deselectedUserIndexes[0], QItemSelectionModel::ClearAndSelect);
+                    categoryColumn->selectionModel()->select(deselectedCategoryIndexes[0], QItemSelectionModel::ClearAndSelect);
                 }
 
                 return;
             }
 
-            authenticated = selectedUser->Authenticate(password, User::Decrypt);
+            authenticated = selectedCategory->Authenticate(password, Category::Decrypt);
             //TODO: Add small delay between authentication attempts
         }
     }
@@ -250,7 +250,7 @@ void MainWindow::removeSelectedPasswordEntry() {
     QModelIndex selectedRowModelIndex = selectedRowIndexes.first();
 
     QString serviceName = selectedRowModelIndex.data().toString();
-    userdata->DeleteUser(serviceName);
+    userdata->DeleteCategory(serviceName);
 
     int selectedRow = selectedRowModelIndex.row();
     passwordColumnModel->removeRow(selectedRow);
@@ -275,29 +275,29 @@ void MainWindow::refreshPasswordEntries() {
     passwordColumnModel->removeRows(0, numRows);
 
     // find the selected row
-    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
+    QList<QModelIndex> selectedRowIndexes = categoryColumn->selectionModel()->selectedRows();
     if (selectedRowIndexes.size() == 0) {
         return;
     }
 
     int selectedRow = selectedRowIndexes.first().row();
-    QString selectedUsername = userColumnModel->stringList()[selectedRow];
-    User* selectedUser = userdata->GetUser(selectedUsername);
+    QString selectedCategoryName = categoryColumnModel->stringList()[selectedRow];
+    Category* selectedCategory = userdata->GetCategory(selectedCategoryName);
 
-    int numPasswordEntries = selectedUser->password_entries.length();
+    int numPasswordEntries = selectedCategory->password_entries.length();
     passwordColumnModel->insertRows(0, numPasswordEntries);
 
     int i;
     QModelIndex curRowModelIndex;
     for (i = 0; i < numPasswordEntries; i++) {
         curRowModelIndex = passwordColumnModel->index(i);
-        passwordColumnModel->setData(curRowModelIndex, selectedUser->password_entries[i].service_name, Qt::DisplayRole);
+        passwordColumnModel->setData(curRowModelIndex, selectedCategory->password_entries[i].service_name, Qt::DisplayRole);
     }
 }
 
 void MainWindow::refreshDetailsPane() {
-    // find the selected user
-    QList<QModelIndex> selectedRowIndexes = userColumn->selectionModel()->selectedRows();
+    // find the selected category
+    QList<QModelIndex> selectedRowIndexes = categoryColumn->selectionModel()->selectedRows();
 
     if (selectedRowIndexes.size() == 0) {
         clearDetailsPane();
@@ -305,9 +305,9 @@ void MainWindow::refreshDetailsPane() {
     }
 
     int selectedRow = selectedRowIndexes[0].row();
-    QString selectedUsername = userColumnModel->stringList()[selectedRow];
+    QString selectedCategoryName = categoryColumnModel->stringList()[selectedRow];
 
-    User* selectedUser = userdata->GetUser(selectedUsername);
+    Category* selectedCategory = userdata->GetCategory(selectedCategoryName);
 
     // find the selected password entry
     selectedRowIndexes = passwordColumn->selectionModel()->selectedRows();
@@ -318,7 +318,7 @@ void MainWindow::refreshDetailsPane() {
     }
 
     selectedRow = selectedRowIndexes[0].row();
-    PwEntry selectedPwEntry = selectedUser->password_entries[selectedRow];
+    PwEntry selectedPwEntry = selectedCategory->password_entries[selectedRow];
 
     serviceName->setText(selectedPwEntry.service_name);
     username->setText(selectedPwEntry.username);

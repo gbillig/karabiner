@@ -1,16 +1,16 @@
-#include "../inc/user.h"
+#include "../inc/category.h"
 #include "../inc/glbcrypto/misc.h"
 #include "../inc/glbcrypto/sha.h"
 
-User::User() {}
+Category::Category() {}
 
-User::User(QString username,
+Category::Category(QString category,
            QByteArray auth_salt,
            QByteArray key_salt,
            QByteArray iv,
            QByteArray auth_hash,
            QVector<PwEntry> password_entries)
-    : username(username),
+    : category(category),
       password_entries(password_entries),
       auth_salt(auth_salt),
       key_salt(key_salt),
@@ -22,8 +22,8 @@ User::User(QString username,
 
 }
 
-User::User(QString username, QString password)
-    : username(username),
+Category::Category(QString category, QString password)
+    : category(category),
       pristine(false),
       decrypted(true)
 {
@@ -45,7 +45,7 @@ User::User(QString username, QString password)
     sha_256((uint8_t*) auth_hash.data(), (uint8_t*) salted_password.data(), salted_password.length() * 8);
 }
 
-int User::AddPwEntry(PwEntry password_entry) {
+int Category::AddPwEntry(PwEntry password_entry) {
     int i;
     for (i = 0; i < password_entries.size(); i++) {
         if (password_entries[i].service_name == password_entry.service_name) {
@@ -60,7 +60,7 @@ int User::AddPwEntry(PwEntry password_entry) {
 
 // return 1 : auth success
 // return 0 : auth fail
-int User::Authenticate(QString input_password, AuthenticateFlag auth_mode) {
+int Category::Authenticate(QString input_password, AuthenticateFlag auth_mode) {
     QByteArray input_auth_salted_password = auth_salt + input_password.toLatin1();
     QByteArray input_auth_hash = QByteArray("", 32);
     sha_256((uint8_t*) input_auth_hash.data(), (uint8_t*) input_auth_salted_password.data(), input_auth_salted_password.length() * 8);
@@ -78,7 +78,7 @@ int User::Authenticate(QString input_password, AuthenticateFlag auth_mode) {
     return 1;
 }
 
-void User::EncryptAllPwEntries(QString password) {
+void Category::EncryptAllPwEntries(QString password) {
     QByteArray key = key_salt + password.toLatin1();
     QByteArray key_hash = QByteArray("", 32);
 
@@ -90,7 +90,7 @@ void User::EncryptAllPwEntries(QString password) {
     }
 }
 
-void User::DecryptAllPwEntries(QString password) {
+void Category::DecryptAllPwEntries(QString password) {
     QByteArray key = key_salt + password.toLatin1();
     QByteArray key_hash = QByteArray("", 32);
 
@@ -104,8 +104,8 @@ void User::DecryptAllPwEntries(QString password) {
     decrypted = true;
 }
 
-void User::SerializeUser(QDataStream* stream) {
-    *stream << username;
+void Category::SerializeCategory(QDataStream* stream) {
+    *stream << category;
     *stream << auth_salt;
     *stream << key_salt;
     *stream << iv;
@@ -119,10 +119,10 @@ void User::SerializeUser(QDataStream* stream) {
     }
 }
 
-bool User::isPristine() {
+bool Category::isPristine() {
     return pristine;
 }
 
-bool User::isDecrypted() {
+bool Category::isDecrypted() {
     return decrypted;
 }

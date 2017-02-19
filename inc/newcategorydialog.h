@@ -16,12 +16,12 @@
 #include "userdata.h"
 
 
-class NewUserDialog : public QDialog
+class NewCategoryDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    NewUserDialog(QWidget *parent = 0);
+    NewCategoryDialog(QWidget *parent = 0);
 
 private slots:
     void accept();
@@ -29,7 +29,7 @@ private slots:
 private:
     UserData *userdata;
 
-    QLineEdit *usernameEdit;
+    QLineEdit *categoryEdit;
     QLineEdit *passwordEdit;
     QLineEdit *passwordConfirmEdit;
     QGroupBox *cryptoBox;

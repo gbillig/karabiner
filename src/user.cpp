@@ -25,7 +25,7 @@ User::User(QString username,
 User::User(QString username, QString password)
     : username(username),
       pristine(false),
-      decrypted(false)
+      decrypted(true)
 {
     // create auth_salt and key_salt
     // generate crypto secure pseudo random number for iv

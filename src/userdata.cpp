@@ -118,8 +118,8 @@ int UserData::SaveUserFile(QString filepath) {
     int i;
     for (i = 0; i < num_categories; i++) {
         if (!categories[i].isPristine()) {
-            bool authenticated = false;
-            while (!authenticated) {
+            int auth_rval;
+            do {
                 bool accepted;
 
                 // TODO: Refactor ---
@@ -144,8 +144,8 @@ int UserData::SaveUserFile(QString filepath) {
                     return 1;
                 }
 
-                authenticated = categories[i].Authenticate(password, Category::Encrypt);
-            }
+                auth_rval = categories[i].Authenticate(password, Category::Encrypt);
+            } while (auth_rval != 0);
         }
 
         categories[i].SerializeCategory(&stream);
@@ -196,9 +196,13 @@ int UserData::DeleteCategory(QString category) {
 }
 
 int UserData::AddNewPwEntry(Category* category, PwEntry password_entry) {
-    category->AddPwEntry(password_entry);
-    emit passwordEntryAdded(password_entry.service_name);
+    int rval = category->AddPwEntry(password_entry);
 
+    if (rval != 0) {
+        return 1;
+    }
+
+    emit passwordEntryAdded(password_entry.service_name);
     return 0;
 }
 

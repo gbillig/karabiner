@@ -34,6 +34,21 @@ void NewPasswordDialog::accept()
     QString password = passwordEdit->text();
     QString notes = "notes";
 
+    if (service_name == "") {
+        // service_name field is emtpy
+        return;
+    }
+
+    if (username == "") {
+        // username field is empty
+        return;
+    }
+
+    if (password == "") {
+        // password field is empty
+        return;
+    }
+
     PwEntry *newPwEntry = new PwEntry(service_name, username, password, notes);
 
     MainWindow* mainWindow = (MainWindow*) this->parent();

@@ -43,8 +43,8 @@ private:
     QByteArray iv;
     QByteArray auth_hash;
 
-    void EncryptAllPwEntries(QString password);
-    void DecryptAllPwEntries(QString password);
+    int EncryptAllPwEntries(QString password);
+    int DecryptAllPwEntries(QString password);
     bool pristine;
     bool decrypted;
 

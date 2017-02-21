@@ -174,7 +174,7 @@ void MainWindow::addCategoryEntry(QString categoryToAdd) {
     categoryColumnModel->insertRow(lastRow);
     QModelIndex lastRowModelIndex = categoryColumnModel->index(lastRow);
     categoryColumnModel->setData(lastRowModelIndex, categoryToAdd, Qt::DisplayRole);
-    categoryColumn->selectionModel()->select(lastRowModelIndex, QItemSelectionModel::ClearAndSelect);
+    //categoryColumn->selectionModel()->select(lastRowModelIndex, QItemSelectionModel::ClearAndSelect);
 }
 
 void MainWindow::removeSelectedCategoryEntry() {
@@ -209,9 +209,9 @@ void MainWindow::categorySelected(const QItemSelection &selectedCategoryItem, co
 
     // authenticate category if encrypted
     if (!selectedCategory->isDecrypted()) {
-        bool authenticated = 0;
+        int auth_rval;
 
-        while (!authenticated) {
+        do {
             bool accepted;
             QString password = QInputDialog::getText(this, "Authentication", "Password:",
                                                      QLineEdit::Password, "", &accepted);
@@ -229,9 +229,10 @@ void MainWindow::categorySelected(const QItemSelection &selectedCategoryItem, co
                 return;
             }
 
-            authenticated = selectedCategory->Authenticate(password, Category::Decrypt);
+            auth_rval = selectedCategory->Authenticate(password, Category::Decrypt);
+
             //TODO: Add small delay between authentication attempts
-        }
+        } while (auth_rval != 0);
     }
 
     refreshPasswordEntries();
